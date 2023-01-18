@@ -104,14 +104,13 @@ int writeFile(const char* fileName, const char* fileContent) {
         strcpy(newFileName, fileName);
     }
     //TODO: change the output file name to "output/"
-    strcpy(outputNewFileName, "output/");
+    strcpy(outputNewFileName, "outputs/");
     strcat(outputNewFileName, newFileName);
-    printf("output file name: %s", outputNewFileName);
-    FILE* newFile = fopen(newFileName, "w");
+    FILE* newFile = fopen(outputNewFileName, "w");
 
     size_t result = fwrite(fileContent, 1, strlen(fileContent), newFile);
     if(result < 0) {
-        printf("Error: Unable to write to file %s", newFileName);
+        printf("Error: Unable to write to file %s", outputNewFileName);
         fclose(newFile);
         return 1;
     }
