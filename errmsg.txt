@@ -1,3 +1,0 @@
-0 ERROR: 0 ERROR: warning print example ./comp-p1 
-1 ERROR: warning print example -c 
-2 ERROR: This is an error, and it stops
