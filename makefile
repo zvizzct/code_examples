@@ -1,5 +1,5 @@
 # Executable file name
-EXE = prepreprocesor
+EXE = preprocesor
 
 # Source file name
 SRC = preprocesor.c
@@ -11,7 +11,7 @@ INC = src/utilsFiles.h
 CC = gcc
 
 # Compilation options
-CFLAGS = -Wall -Wextra
+CFLAGS = -g
 
 # Rule to build the executable
 $(EXE): $(SRC) $(INC)
