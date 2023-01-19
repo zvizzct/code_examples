@@ -5,9 +5,9 @@ This application is a preprocessor for C or H files which can process a file and
 The preprocessor is a tool that allows you to process your code before it is compiled. This application can make the following changes to your code:
 
 1. Directives:
-    a. #include
-    b. #define
-    c. #ifdef - #endif
+    - a. #include
+    - b. #define
+    - c. #ifdef - #endif
 2. Parametrized macros: A macro is like a function but at the preprocessing level. It is a substitution function that has parameters to provide different situations or values to the substitutions.
 3. Operator backslash “\”
 4. Eliminate comments and replace each of them by a space (empty lines are not eliminated)
