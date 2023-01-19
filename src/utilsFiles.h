@@ -62,76 +62,60 @@ char* readFile(FILE* file) {
 
 
 /**
- * @brief Write a string to a file with a provided name
- * 
- * @param fileName The name of the file to create/write to
- * @param fileContent The content to write to the file
- * @return  int 0 on success, 1 on failure
+ * @brief  Extract the base name of a file from a provided file name
  *
- * The function takes in two char* which represents the name of the file to create/write 
- * to and the content to write to the file. It checks if the provided file name or content is 
- * NULL, if it is the function will print an error message and return 1. The function creates 
- * a new file name by appending "-pre.c" or "-pre-h" to the original file name if the original
- * file name is a .c or .h file, otherwise the function will use the original file name. 
- * The function uses fopen to create/open the file with "w" mode. It uses fwrite to write the 
- * content to the file. If fwrite returns a negative value, the function will print an error 
- * message, close the file, and return 1. If fwrite is successful, the function will close the 
- * file and return 0.
-
+ * @param fileName The name of the file
+ * @return char* The base name of the file, or the original file name if no '/' or '' is present
+ *
+ * The function takes in a char* which represents the name of the file. It checks if the provided
+ * file name is NULL. It then uses strrchr to search for the last occurrence of '/' or '' in the 
+ * file name, if either are found it returns a pointer to the character after the last occurrence,
+ * otherwise it returns the original file name.
  */
+char* baseName(const char* fileName) {
+    char* base = NULL;
 
- //change the writefile function to output the file on the directory "output"
- 
-int writeFile(const char* fileName, const char* fileContent) {
-    if(fileName == NULL || fileContent == NULL) {
-        printf("Error: Invalid parameter, file name or content is NULL");
-        return 1;
+    if (fileName != NULL) {
+        base = strrchr(fileName, '/');
+        if (base == NULL) {
+            base = strrchr(fileName, '\\');
+        }
     }
-    char newFileName[256];
-    char outputNewFileName[256];
+
+    if (base == NULL) {
+        return (char *)fileName;
+    }
+    else {
+        return base + 1;
+    }
+}
+
+/**
+ * @brief Generate a new file name by appending "-pre" to the original file name before its extension
+ * 
+ * @param fileName  fileName The original file name
+ * @return char*  The new file name
+ *
+ * The function takes in a char* which represents the original file name. It uses malloc to 
+ * allocate memory to store the new file name. It uses strrchr to find the last occurrence
+ * of '.' in the file name, and it checks if it's a ".c" or ".h" extension. If the extension is ".c" 
+ * or ".h" it creates a new file name by copying the original file name up to the '.', 
+ * appending "-pre" and then the extension. If it doesn't find the extension or it's not .c or 
+ * .h it will return the original file name. It returns the new file name.
+ */
+char* getNewFileName(const char* fileName) {
+    char* newFileName = malloc(sizeof(char) * 256);
     char *dot = strrchr(fileName,'.');
-    if (dot && !strcmp(dot, ".c")) {
+    if (dot && (!strcmp(dot, ".c") || !strcmp(dot, ".h"))) {
         strncpy(newFileName, fileName, dot-fileName);
         newFileName[dot-fileName] = 0;
-        strcat(newFileName, "-pre.c");
-    }
-    else if (dot && !strcmp(dot, ".h")) {
-        strncpy(newFileName, fileName, dot-fileName);
-        newFileName[dot-fileName] = 0;
-        strcat(newFileName, "-pre.h");
+        strcat(newFileName, "-pre");
+        strcat(newFileName, dot);
     }
     else {
         strcpy(newFileName, fileName);
     }
-    //TODO: change the output file name to "output/"
-    strcpy(outputNewFileName, "outputs/");
-    strcat(outputNewFileName, newFileName);
-    FILE* newFile = fopen(outputNewFileName, "w");
-
-    size_t result = fwrite(fileContent, 1, strlen(fileContent), newFile);
-    if(result < 0) {
-        printf("Error: Unable to write to file %s", outputNewFileName);
-        fclose(newFile);
-        return 1;
-    }
-
-    fclose(newFile);
-    return 0;
+    return newFileName;
 }
 
 
-//This is a test function to change the content of a file
-void replaceString(char* fileContent, const char* searchString, const char* newString) {
-    char* match = fileContent;
-    int searchStringLen = strlen(searchString);
-    int newStringLen = strlen(newString);
-    char* end = fileContent + strlen(fileContent);
-    while (match != end) {
-        match = strstr(match, searchString);
-        if (match == NULL) break;
-        int tailStringLen = strlen(match + searchStringLen);
-        memmove(match + newStringLen, match + searchStringLen, tailStringLen + 1);
-        memcpy(match, newString, newStringLen);
-        match += newStringLen;
-    }
-}
