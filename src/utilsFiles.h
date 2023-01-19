@@ -124,10 +124,11 @@ int writeFile(const char* fileName, const char* fileContent) {
 void replaceString(char* fileContent, const char* searchString, const char* newString) {
     char* match = fileContent;
     int searchStringLen = strlen(searchString);
-
-    while ((match = strstr(match, searchString)) != NULL) {
-        int newStringLen = strlen(newString);
-        int matchStringLen = strlen(match);
+    int newStringLen = strlen(newString);
+    char* end = fileContent + strlen(fileContent);
+    while (match != end) {
+        match = strstr(match, searchString);
+        if (match == NULL) break;
         int tailStringLen = strlen(match + searchStringLen);
         memmove(match + newStringLen, match + searchStringLen, tailStringLen + 1);
         memcpy(match, newString, newStringLen);
