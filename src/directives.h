@@ -19,8 +19,57 @@ void directivesInclude() {
 }
 
 //TODO: 1.B) #define
-void directivesDefine() {
-  
+
+void findAndReplace(char *fileContent, char *name, char *value) {
+    char *temp;
+    char *occurrence = strstr(fileContent, name);
+
+    while (occurrence != NULL) {
+        temp = strdup(occurrence + strlen(name));
+        strncpy(occurrence, value, strlen(value));
+        strcat(occurrence, temp);
+        free(temp);
+        occurrence = strstr(fileContent, name);
+    }
+}
+
+void deleteLine(char *fileContent, char *line) {
+    char *temp;
+    char *occurrence = strstr(fileContent, line);
+
+    if (occurrence != NULL) {
+        temp = strdup(occurrence + strlen(line));
+        strncpy(occurrence, temp, strlen(temp));
+        free(temp);
+    }
+}
+
+void directivesDefine(char *fileContent) {
+
+    char *line, *name, *value;
+    char *token, *temp;
+    char *delimiter = "\n";
+    char *define = "#define ";
+    // printf("%s", fileContent);
+    line = strtok(fileContent, delimiter);
+    if(line != NULL)
+        printf("%s", line);
+    // printf("%s", line);
+
+    // while (line != NULL) {
+    //     if (strstr(line, define) != NULL) {
+    //         temp = strdup(line + strlen(define));
+    //         token = strtok(temp, " ");
+    //         name = strdup(token);
+    //         token = strtok(NULL, " ");
+    //         value = strdup(token);
+
+    //         findAndReplace(fileContent, name, value);
+    //         deleteLine(fileContent, line);
+    //     }
+    //     line = strtok(NULL, delimiter);
+    // }
+
 }
 
 //TODO: 1.C) #ifdef - #endif
@@ -42,5 +91,7 @@ void operatorBackslash() {
 void eliminateComments() {
   
 }
+
+
 
 
