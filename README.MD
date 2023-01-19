@@ -22,7 +22,7 @@ The application can be run with the following flags:
 ## Installation
 To install the application, navigate to the directory where the files are located and run the command `make`. This will compile the source code and create the executable.
 
-To clean the object files and the executable generated during the compilation, run the command `make clean`.
+To clean the executable generated during the compilation, run the command `make clean`.
 
 ## Usage
 To use the application, navigate to the directory where the files are located and run the command `./prepreprocesor [flags] [filename]`. Replace "[flags]" with any of the available flags mentioned above and "[filename]" with the name of the file you want to process.

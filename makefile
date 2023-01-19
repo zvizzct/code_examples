@@ -1,21 +1,22 @@
-# Nombre del ejecutable
+# Executable file name
 EXE = prepreprocesor
 
-# Nombre del archivo fuente
+# Source file name
 SRC = preprocesor.c
 
-# Nombre del archivo de encabezado
+# Header file name
 INC = src/utilsFiles.h
 
-# Comando de compilación
+# Compilation command
 CC = gcc
 
-# Opciones de compilación
+# Compilation options
 CFLAGS = -Wall -Wextra
 
-# Regla para construir el ejecutable
+# Rule to build the executable
 $(EXE): $(SRC) $(INC)
 	$(CC) $(SRC) $(INC) $(CFLAGS) -o $(EXE)
 
+# Rule to clean up the executable generated during compilation
 clean:
 	rm -f $(EXE)
