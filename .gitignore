@@ -1,2 +1,5 @@
-preprocesor
-output/*.c
+# exclude everything
+output/*
+
+# exception to the rule
+!output/.gitkeep 
