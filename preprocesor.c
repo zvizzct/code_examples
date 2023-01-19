@@ -1,11 +1,12 @@
-#include <stdio.h> 
-#include <stdlib.h> 
+#include <stdio.h>
+#include <stdlib.h>
 #include "src/utilsFiles.h"
 #include "src/directives.h"
 
-int main(int argc, char**argv) {
+int main(int argc, char **argv)
+{
     // Variables
-    FILE *file; 
+    FILE *file;
     char *fileName, *fileContent, c;
     int fd;
 
@@ -16,27 +17,26 @@ int main(int argc, char**argv) {
     file = openFile(fileName);
 
     // Check if file was successfully opened
-    if(file == NULL) {
+    if (file == NULL)
+    {
         return 1;
     }
 
     // Read file
     fileContent = readFile(file);
 
-    // Replace "#include" with "CHANGED"
-    // replaceString(fileContent, "#include", "CHANGED");
-    
-    // // Write changes to file
-    // if(writeFile(fileName, fileContent) != 0) {
-    //     return 1;
-    // }
+    // Write changes to file
+    if (writeFile(fileName, fileContent) != 0)
+    {
+        return 1;
+    }
 
-    //test
-    directivesDefine(fileContent);
+    // test
+    // directivesDefine(fileContent);
 
     // Free memory and close file
     free(fileContent);
-    fclose(file);     
+    fclose(file);
 
     return 0;
 }
