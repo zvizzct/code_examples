@@ -32,7 +32,7 @@ int main(int argc, char **argv)
     }
 
     // test
-    // directivesDefine(fileContent);
+    directivesDefine(fileContent);
 
     // Free memory and close file
     free(fileContent);

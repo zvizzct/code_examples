@@ -20,3 +20,8 @@ $(EXE): $(SRC) $(INC)
 # Rule to clean up the executable generated during compilation
 clean:
 	rm -f $(EXE)
+
+.PHONY: clean
+
+# Default rule
+all: clean $(EXE)

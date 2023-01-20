@@ -163,7 +163,6 @@ int writeFile(char *fileName, char *fileContent)
 
     strcpy(newFileNameWithFolder, outputFolder);
     strcat(newFileNameWithFolder, newFileName);
-    printf("Writing to file %s", newFileName);
 
     FILE *fptr = fopen(newFileNameWithFolder, "w");
     if (fwrite(fileContent, sizeof(char), strlen(fileContent), fptr) < 0)
