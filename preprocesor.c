@@ -25,15 +25,14 @@ int main(int argc, char **argv)
     // Read file
     fileContent = readFile(file);
 
-    // Write changes to file
+    // preproces defines
+    directivesDefine(fileContent);
+
+    // write prepcocesed content to file
     if (writeFile(fileName, fileContent) != 0)
     {
         return 1;
     }
-
-    // test
-    directivesDefine(fileContent);
-
     // Free memory and close file
     free(fileContent);
     fclose(file);

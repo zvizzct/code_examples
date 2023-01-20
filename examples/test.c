@@ -1,8 +1,21 @@
+#include <stdio.h>
+
+/*
+ * Compilers
+ * Practice 1: c pre-processor
+ * Example files: comp-p1.h, comp-p1.c
+ */
 
 #include <stdio.h>
 
 #define ON 1
 #define OFF 0
+
+#define PRINTDESTFILE "out.txt"     // file destination of normal program print: stdout/out.txt
+#define PRINTERRORFILE "errmsg.txt" // file destination of normal program print: errmsg.txt
+
+FILE *errfile; // File where to write error messages
+FILE *ofile;   // File where to write program information
 
 FILE *errfile; // File where to write error messages
 FILE *ofile;   // File where to write program information
