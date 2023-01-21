@@ -38,6 +38,7 @@ This function uses the "memset" function to set the memory of the "name" and
 "value" fields of the DefineDirective struct at the specified position to zero.
 This "removes" or clears the values stored in these fields of the struct.
 */
+
 /**
  * @brief Remove the DefineDirective struct at a specified position
  *
@@ -56,6 +57,7 @@ For each struct, it compares its name to the value of all other structs.
 If the name of one struct is equal to the value of another struct, the function copies
 the value of the first struct to the second struct.
 */
+
 /**
  * @brief Modify the value of DefineDirective structs if the name of one struct
  * is equal to the value of another struct
@@ -65,6 +67,7 @@ the value of the first struct to the second struct.
  */
 void changeStructDirectivesDefine(struct DefineDirective *defines, int defineCount)
 {
+
     for (int i = 0; i < defineCount; i++)
     {
         for (int j = 0; j < defineCount; j++)
@@ -85,6 +88,7 @@ file content starting from the current index.
 If a match is found, the function replaces the substring with the value of the struct,
 and shift the rest of the file content to fill the gap.
 */
+
 /**
  * @brief Replace all occurances of a define directive name in a file content with its
  * corresponding value
@@ -139,6 +143,7 @@ The loop continues until it reaches a newline character, at which point the loop
 For each character in the loop, the function replaces it with a space character,
 effectively removing the define directive from the string.
 */
+
 /**
  * @brief Remove a define directive from a file content
  *
@@ -166,6 +171,7 @@ if necessary, and then call to replaceDirectivesDefine to replace the names with
 the values in the fileContent.
 If no matches are found it will print a message.
 */
+
 /**
  * @brief Process all #define directives in a string and modify the string
  * according to the directives
@@ -191,7 +197,6 @@ void directivesDefine(char *fileContent)
         {
             match = 1;
             int namePos = pos + 1;
-            parOpen = 0;
             char name[100] = {0};
             char value[100] = {0};
             int nameIndex = 0;
@@ -199,8 +204,10 @@ void directivesDefine(char *fileContent)
 
             while (fileContent[namePos] != ' ' && fileContent[namePos] != '\t' && fileContent[namePos] != '\n')
             {
-                if (fileContent[namePos] == '(' || fileContent[namePos] == ')')
+                if (fileContent[namePos] == '(')
+                {
                     parOpen++;
+                }
 
                 name[nameIndex] = fileContent[namePos];
                 namePos++;
@@ -211,6 +218,10 @@ void directivesDefine(char *fileContent)
             int contSpaces = 0;
             while (fileContent[valuePos] != '\n')
             {
+                if (fileContent[valuePos] == ')')
+                {
+                    parOpen++;
+                }
                 if (fileContent[valuePos] == ' ' || fileContent[valuePos] == '\t')
                 {
                     if (contSpaces == 0)
@@ -229,14 +240,15 @@ void directivesDefine(char *fileContent)
                 valueIndex++;
             }
 
-            if (parOpen == 2)
-            {
-                removeDirectivesDefine(fileContent, pos - strlen(targetString) + 1);
-                continue;
-            }
-
             memcpy(defines[defineCount].name, name, sizeof(name));
             memcpy(defines[defineCount].value, value, sizeof(value));
+
+            if (parOpen == 2)
+            {
+                removeStructDirectivesDefine(defines, defineCount);
+                defineCount--;
+                parOpen = 0;
+            }
             removeDirectivesDefine(fileContent, pos - strlen(targetString) + 1);
             defineCount++;
             i = 0;

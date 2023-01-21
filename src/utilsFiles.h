@@ -8,6 +8,7 @@ is NULL, the function will print a message and return NULL. If the file could no
 print a message and return NULL. If the file is successfully opened, the function will return a pointer to the
 opened file.
 */
+
 /**
  * @brief Open a file with a provided name
  *
@@ -72,6 +73,7 @@ file name is NULL. It then uses strrchr to search for the last occurrence of '/'
 file name, if either are found it returns a pointer to the character after the last occurrence,
 otherwise it returns the original file name.
 */
+
 /**
  * @brief  Extract the base name of a file from a provided file name
  *
@@ -109,6 +111,7 @@ char *baseName(const char *fileName)
  appending "-pre" and then the extension. If it doesn't find the extension or it's not .c or
  .h it will return the original file name. It returns the new file name.
  */
+
 /**
  * @brief Generate a new file name by appending "-pre" to the original file name before its extension
  *

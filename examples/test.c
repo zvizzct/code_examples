@@ -11,7 +11,7 @@
 #define PRINTWARNING ON // ON = Yes OFF / NO
 #define PRINTERROR ON   // ON = Yes OFF / NO
 
-#define ERROR1(num, message) ({printf("\n%d ERROR \n", num);printf message; })
+#define ERROR1(m, m) ({printf("\n%d ERROR \n", num);printf message; })
 #define FERROR1(num, message) ({fprintf(errfile,"\n%d ERROOORRRRRRRRRR\n", num);fprintf message; })
 
 #define ERROR(num, message) ({WARNING( num, message); exit(0); })
