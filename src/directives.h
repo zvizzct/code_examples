@@ -26,8 +26,66 @@ void directivesInclude()
 }
 
 // TODO: 1.B) #define
+/**
+ * @brief Remove the DefineDirective struct at a specified position
+ *
+ * @param defines Pointer to an array of DefineDirective structs
+ * @param pos The position of the struct to remove
+ *
+ * This function uses the "memset" function to set the memory of the "name" and
+ * "value" fields of the DefineDirective struct at the specified position to zero.
+ * This "removes" or clears the values stored in these fields of the struct.
+ */
+void removeStructDirectivesDefine(struct DefineDirective *defines, int pos)
+{
+    memset(defines[pos].name, 0, sizeof(defines[pos].name));
+    memset(defines[pos].value, 0, sizeof(defines[pos].value));
+}
+
+/**
+ * @brief Modify the value of DefineDirective structs if the name of one struct
+ * is equal to the value of another struct
+ *
+ * @param defines Pointer to an array of DefineDirective structs
+ * @param defineCount The number of DefineDirective structs in the array
+ *
+ * This function uses nested loops to iterate through the array of DefineDirective structs.
+ * For each struct, it compares its name to the value of all other structs.
+ * If the name of one struct is equal to the value of another struct, the function copies
+ * the value of the first struct to the second struct.
+ */
+void changeStructDirectivesDefine(struct DefineDirective *defines, int defineCount)
+{
+    for (int i = 0; i < defineCount; i++)
+    {
+        for (int j = 0; j < defineCount; j++)
+        {
+            if (i != j && strcmp(defines[i].name, defines[j].value) == 0)
+            {
+                strcpy(defines[j].value, defines[i].value);
+            }
+        }
+    }
+}
+
+/**
+ * @brief Replace all occurances of a define directive name in a file content with its
+ * corresponding value
+ *
+ * @param fileContent A pointer to the string which will be modified
+ * @param defines Pointer to an array of DefineDirective structs
+ * @param defineCount The number of DefineDirective structs in the array
+ *
+ * This function uses nested loops to iterate through the array of DefineDirective
+ * structs and the given file content.
+ * For each struct in the array, it compares its name with a substring of the given
+ * file content starting from the current index.
+ * If a match is found, the function replaces the substring with the value of the struct,
+ * and shift the rest of the file content to fill the gap.
+ */
 void replaceDirectivesDefine(char *fileContent, struct DefineDirective *defines, int defineCount)
 {
+
     int i, j, k, match, nameLen, valueLen, contentLen = strlen(fileContent);
     char *name, *value;
     for (i = 0; i < contentLen; i++)
@@ -62,6 +120,18 @@ void replaceDirectivesDefine(char *fileContent, struct DefineDirective *defines,
         }
     }
 }
+/**
+ * @brief Remove a define directive from a file content
+ *
+ * @param fileContent A pointer to the file content which will be modified
+ * @param position The starting position of the define directive in the string
+ *
+ * This function uses a for loop to iterate through the characters of the file
+ * content starting from the given position.
+ * The loop continues until it reaches a newline character, at which point the loop breaks.
+ * For each character in the loop, the function replaces it with a space character,
+ * effectively removing the define directive from the string.
+ */
 void removeDirectivesDefine(char *fileContent, int position)
 {
     int i, j;
@@ -70,17 +140,32 @@ void removeDirectivesDefine(char *fileContent, int position)
         fileContent[i] = ' ';
     }
 }
+
+/**
+ * @brief Process all #define directives in a string and modify the string
+ * according to the directives
+ *
+ * @param fileContent A pointer to the string which will be modified
+ *
+ * This function uses a for loop to iterate through the characters of the file content.
+ * It looks for instances of the string "#define" in the content, when found it
+ * starts to extract the define name and value.
+ * If the define has a () it will remove the whole define, otherwise it will extract
+ * the name and value and store them in a struct array.
+ * After the loop it will call to changeStructDirectivesDefine to modify the defines
+ * if necessary, and then call to replaceDirectivesDefine to replace the names with
+ * the values in the fileContent.
+ * If no matches are found it will print a message.
+ */
 void directivesDefine(char *fileContent)
 {
-
     int i = 0;
     int match = 0;
     int contentLen = strlen(fileContent);
-    int nameIndex = 0;
-    int valueIndex = 0;
     char *targetString = "#define ";
     struct DefineDirective defines[100];
     int defineCount = 0;
+    int parOpen = 0;
 
     for (int pos = 0; pos < contentLen; pos++)
     {
@@ -89,41 +174,64 @@ void directivesDefine(char *fileContent)
         if (i == strlen(targetString))
         {
             match = 1;
-            // Iterate over the next characters to find the name of the constant
             int namePos = pos + 1;
+            parOpen = 0;
+            char name[100] = {0};
+            char value[100] = {0};
+            int nameIndex = 0;
+            int valueIndex = 0;
 
             while (fileContent[namePos] != ' ' && fileContent[namePos] != '\t' && fileContent[namePos] != '\n')
             {
-                defines[defineCount].name[nameIndex] = fileContent[namePos];
+                if (fileContent[namePos] == '(' || fileContent[namePos] == ')')
+                    parOpen++;
+
+                name[nameIndex] = fileContent[namePos];
                 namePos++;
                 nameIndex++;
             }
-            defines[defineCount].name[nameIndex] = '\0';
-            // Iterate over the next characters to find the value of the constant
+
             int valuePos = namePos;
+            int contSpaces = 0;
             while (fileContent[valuePos] != '\n')
             {
                 if (fileContent[valuePos] == ' ' || fileContent[valuePos] == '\t')
                 {
-                    valuePos++;
-                    continue;
+                    if (contSpaces == 0)
+                    {
+                        valuePos++;
+                        contSpaces++;
+                        continue;
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
-                defines[defineCount].value[valueIndex] = fileContent[valuePos];
+                value[valueIndex] = fileContent[valuePos];
                 valuePos++;
                 valueIndex++;
             }
-            defines[defineCount].value[valueIndex] = '\0';
-            defineCount++;
+
+            if (parOpen == 2)
+            {
+                removeDirectivesDefine(fileContent, pos - strlen(targetString) + 1);
+                continue;
+            }
+
+            memcpy(defines[defineCount].name, name, sizeof(name));
+            memcpy(defines[defineCount].value, value, sizeof(value));
             removeDirectivesDefine(fileContent, pos - strlen(targetString) + 1);
+            defineCount++;
             i = 0;
-            nameIndex = 0;
-            valueIndex = 0;
         }
     }
+
     if (!match)
         printf("No matches found");
     else
     {
+        changeStructDirectivesDefine(defines, defineCount);
         replaceDirectivesDefine(fileContent, defines, defineCount);
     }
 }
