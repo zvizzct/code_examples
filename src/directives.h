@@ -25,7 +25,6 @@ void directivesInclude()
 {
 }
 
-// TODO: 1.B) #define
 /**
  * @brief Remove the DefineDirective struct at a specified position
  *
