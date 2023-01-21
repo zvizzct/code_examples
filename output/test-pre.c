@@ -1,6 +1,20 @@
 
 #include <stdio.h>
 
+            
+             
+
+                                                                                               
+                                                                                           
+
+           
+                                            
+                                            
+
+                                                                              
+                                                                                                   
+
+                                                                 
 FILE *errfile; // File where to write error messages
 FILE *ofile;   // File where to write program information
 int main(int argc, char **argv)

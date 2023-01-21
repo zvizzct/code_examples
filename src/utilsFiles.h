@@ -141,8 +141,7 @@ a new file name by appending "-pre.c" or "-pre-h" to the original file name if t
 file name is a .c or .h file, otherwise the function will use the original file name.
 The function uses fopen to create the file with "w" mode. It uses fwrite to write the
 content to the file. If fwrite returns a negative value, the function will print an error
-message, close the file, and return 1. If fwrite is successful, the function will close the
-file and return 0.
+message, close the file, and return the filename with the "-pre" prefix.
 */
 
 /**
@@ -150,10 +149,9 @@ file and return 0.
  *
  * @param fileName The name of the file to create/write to
  * @param fileContent The content to write to the file
- * @return  int 0 on success, 1 on failure
- * @brief  Extract the base name of a file from a provided file name
+ * @return  char * The new file name
  */
-int writeFile(char *fileName, char *fileContent)
+char *writeFile(char *fileName, char *fileContent)
 {
     if (fileName == NULL || fileContent == NULL)
     {
@@ -173,9 +171,7 @@ int writeFile(char *fileName, char *fileContent)
     if (fwrite(fileContent, sizeof(char), strlen(fileContent), fptr) < 0)
     {
         printf("Error writing to file %s", newFileNameWithFolder);
-        fclose(fptr);
-        return 1;
     }
     fclose(fptr);
-    return 0;
+    return newFileNameWithFolder;
 }
