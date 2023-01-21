@@ -20,11 +20,18 @@ struct DefineDirective
     char value[100];
 };
 
+// ------------------------------
+// START OF 1.A) #include
+// ------------------------------
 // TODO: 1.A) #include
 void directivesInclude()
 {
 }
+// ------------------------------
 
+// ------------------------------
+// START OF 1.B) #define
+// ------------------------------
 /**
  * @brief Remove the DefineDirective struct at a specified position
  *
@@ -235,22 +242,41 @@ void directivesDefine(char *fileContent)
     }
 }
 
+// ------------------------------
+
+// ------------------------------
+// START OF 1.C) #ifndef - #endif
+// ------------------------------
 // TODO: 1.C) #ifdef - #endif
 void directivesIfdef()
 {
 }
+// ------------------------------
 
+// ------------------------------
+// START OF 2) Parametrized macros
+// ------------------------------
 // TODO: 2) Parametrized macros
 void parametrizedMacros()
 {
 }
+// ------------------------------
 
+// ------------------------------
+// START OF 3) Operator backslash “\”
+// ------------------------------
 // TODO: 3) Operator backslash “\”
 void operatorBackslash()
 {
 }
+// ------------------------------
+
+// ------------------------------
+// START OF 4) Eliminate comments
+// ------------------------------
 
 // TODO: 4) Eliminate comments and replace each of them by a space (empty lines are not eliminated)
 void eliminateComments()
 {
 }
+// ------------------------------
