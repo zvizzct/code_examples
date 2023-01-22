@@ -1,8 +1,11 @@
-
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
+#include <stdlib.h>
+#include <unistd.h>
 
+#define MAX_DEFINES 100
+#define MAX_NAME_LEN 100
 /*
 1. Directives
     a. #include
@@ -32,53 +35,6 @@ void directivesInclude()
 // ------------------------------
 // START OF 1.B) #define
 // ------------------------------
-
-/*
-This function uses the "memset" function to set the memory of the "name" and
-"value" fields of the DefineDirective struct at the specified position to zero.
-This "removes" or clears the values stored in these fields of the struct.
-*/
-
-/**
- * @brief Remove the DefineDirective struct at a specified position
- *
- * @param defines Pointer to an array of DefineDirective structs
- * @param pos The position of the struct to remove
- */
-void removeStructDirectivesDefine(struct DefineDirective *defines, int pos)
-{
-    memset(defines[pos].name, 0, sizeof(defines[pos].name));
-    memset(defines[pos].value, 0, sizeof(defines[pos].value));
-}
-
-/*
-This function uses nested loops to iterate through the array of DefineDirective structs.
-For each struct, it compares its name to the value of all other structs.
-If the name of one struct is equal to the value of another struct, the function copies
-the value of the first struct to the second struct.
-*/
-
-/**
- * @brief Modify the value of DefineDirective structs if the name of one struct
- * is equal to the value of another struct
- *
- * @param defines Pointer to an array of DefineDirective structs
- * @param defineCount The number of DefineDirective structs in the array
- */
-void changeStructDirectivesDefine(struct DefineDirective *defines, int defineCount)
-{
-
-    for (int i = 0; i < defineCount; i++)
-    {
-        for (int j = 0; j < defineCount; j++)
-        {
-            if (i != j && strcmp(defines[i].name, defines[j].value) == 0)
-            {
-                strcpy(defines[j].value, defines[i].value);
-            }
-        }
-    }
-}
 
 /*
 This function uses nested loops to iterate through the array of DefineDirective
@@ -135,132 +91,128 @@ void replaceDirectivesDefine(char *fileContent, struct DefineDirective *defines,
         }
     }
 }
-
 /*
-This function uses a for loop to iterate through the characters of the file
-content starting from the given position.
-The loop continues until it reaches a newline character, at which point the loop breaks.
-For each character in the loop, the function replaces it with a space character,
-effectively removing the define directive from the string.
+This function uses nested loops to iterate through the array of DefineDirective structs.
+For each struct, it compares its name to the value of all other structs.
+If the name of one struct is equal to the value of another struct, the function copies
+the value of the first struct to the second struct.
 */
 
 /**
- * @brief Remove a define directive from a file content
+ * @brief Modify the value of DefineDirective structs if the name of one struct
+ * is equal to the value of another struct
  *
- * @param fileContent A pointer to the file content which will be modified
- * @param position The starting position of the define directive in the string
- *
+ * @param defines Pointer to an array of DefineDirective structs
+ * @param defineCount The number of DefineDirective structs in the array
  */
-void removeDirectivesDefine(char *fileContent, int position)
+void changeStructDirectivesDefine(struct DefineDirective *defines, int *defineCount)
 {
-    int i, j;
-    for (i = position; fileContent[i] != '\n'; i++)
+
+    for (int i = 0; i < *defineCount; i++)
     {
-        fileContent[i] = ' ';
+        for (int j = 0; j < *defineCount; j++)
+        {
+            if (i != j && strcmp(defines[i].name, defines[j].value) == 0)
+            {
+                strcpy(defines[j].value, defines[i].value);
+            }
+        }
     }
 }
 
-/*
-This function uses a for loop to iterate through the characters of the file content.
-It looks for instances of the string "#define" in the content, when found it
-starts to extract the define name and value.
-If the define has a () it will remove the whole define, otherwise it will extract
-the name and value and store them in a struct array.
-After the loop it will call to changeStructDirectivesDefine to modify the defines
-if necessary, and then call to replaceDirectivesDefine to replace the names with
-the values in the fileContent.
-If no matches are found it will print a message.
-*/
-
-/**
- * @brief Process all #define directives in a string and modify the string
- * according to the directives
- *
- * @param fileContent A pointer to the string which will be modified
- *
- */
-void directivesDefine(char *fileContent)
+void removeParenthesisDefine(struct DefineDirective *defines, int *defineCount)
 {
-    int i = 0;
-    int match = 0;
-    int contentLen = strlen(fileContent);
-    char *targetString = "#define ";
-    struct DefineDirective defines[100];
-    int defineCount = 0;
-    int parOpen = 0;
-
-    for (int pos = 0; pos < contentLen; pos++)
+    for (int i = 0; i < *defineCount; i++)
     {
-        i = (fileContent[pos] == targetString[i]) ? i += 1 : 0;
-
-        if (i == strlen(targetString))
+        if (defines[i].value[0] == '(' && defines[i].value[strlen(defines[i].value) - 1] == ')')
         {
-            match = 1;
-            int namePos = pos + 1;
-            char name[100] = {0};
-            char value[100] = {0};
-            int nameIndex = 0;
-            int valueIndex = 0;
-
-            while (fileContent[namePos] != ' ' && fileContent[namePos] != '\t' && fileContent[namePos] != '\n')
+            for (int j = i; j < *defineCount - 1; j++)
             {
-                if (fileContent[namePos] == '(')
-                {
-                    parOpen++;
-                }
-
-                name[nameIndex] = fileContent[namePos];
-                namePos++;
-                nameIndex++;
+                defines[j] = defines[j + 1];
             }
-
-            int valuePos = namePos;
-            int contSpaces = 0;
-            while (fileContent[valuePos] != '\n')
-            {
-                if (fileContent[valuePos] == ')')
-                {
-                    parOpen++;
-                }
-                if (fileContent[valuePos] == ' ' || fileContent[valuePos] == '\t')
-                {
-                    if (contSpaces == 0)
-                    {
-                        valuePos++;
-                        contSpaces++;
-                        continue;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-                value[valueIndex] = fileContent[valuePos];
-                valuePos++;
-                valueIndex++;
-            }
-
-            memcpy(defines[defineCount].name, name, sizeof(name));
-            memcpy(defines[defineCount].value, value, sizeof(value));
-
-            if (parOpen == 2)
-            {
-                removeStructDirectivesDefine(defines, defineCount);
-                defineCount--;
-                parOpen = 0;
-            }
-            removeDirectivesDefine(fileContent, pos - strlen(targetString) + 1);
-            defineCount++;
-            i = 0;
+            (*defineCount)--;
+            i--;
         }
     }
+}
+void removeAfterLastStringDefine(struct DefineDirective *defines, int *defineCount)
+{
 
-    if (!match)
+    for (int i = 0; i < *defineCount; i++)
+    {
+        for (int j = 0; j < strlen(defines[i].value); j++)
+        {
+            if (defines[i].value[j] == ' ')
+            {
+                defines[i].value[j] = '\0';
+            }
+        }
+    }
+}
+void directivesDefine2(char *fileContent)
+{
+    struct DefineDirective defines[MAX_DEFINES] = {0};
+    int defineCount = 0;
+    char *lineStart = fileContent;
+    while (lineStart != NULL)
+    {
+        lineStart = strstr(lineStart, "#define ");
+        if (lineStart == NULL)
+        {
+            break;
+        }
+        char *nameStart = lineStart + strlen("#define ");
+        char *nameEnd = nameStart;
+        while (isalnum(*nameEnd) || *nameEnd == '_')
+        {
+            nameEnd++;
+        }
+        if (nameStart == nameEnd)
+        {
+            lineStart = nameEnd;
+            continue;
+        }
+        char *valueStart = nameEnd;
+        while (isspace(*valueStart))
+        {
+            valueStart++;
+        }
+        char *valueEnd = strchr(valueStart, '\n');
+        if (valueEnd == NULL)
+        {
+            lineStart = valueStart;
+            continue;
+        }
+        int nameLen = nameEnd - nameStart;
+        int valueLen = valueEnd - valueStart;
+        if (nameLen >= MAX_NAME_LEN || valueLen >= MAX_NAME_LEN)
+        {
+            lineStart = valueEnd;
+            continue;
+        }
+        memcpy(defines[defineCount].name, nameStart, nameLen);
+        memcpy(defines[defineCount].value, valueStart, valueLen);
+        defines[defineCount].name[nameLen] = '\0';
+        defines[defineCount].value[valueLen] = '\0';
+        // remove_define2(fileContent, defines[defineCount].name);
+        defineCount++;
+        lineStart = valueEnd;
+    }
+
+    if (defineCount == 0)
+    {
         printf("No matches found");
+        return;
+    }
     else
     {
-        changeStructDirectivesDefine(defines, defineCount);
-        replaceDirectivesDefine(fileContent, defines, defineCount);
+        removeParenthesisDefine(defines, &defineCount);
+        removeAfterLastStringDefine(defines, &defineCount);
+        changeStructDirectivesDefine(defines, &defineCount);
+        for (int i = 0; i < defineCount; i++)
+        {
+            printf("name: %s, value: %s\n", defines[i].name, defines[i].value);
+        }
     }
 }
 
@@ -302,3 +254,19 @@ void eliminateComments()
 {
 }
 // ------------------------------
+
+int remove_define2(char *fileContent, char *defineName)
+{
+    char *defineStart = strstr(fileContent, defineName);
+    if (defineStart == NULL)
+    {
+        return 0;
+    }
+    char *defineEnd = strchr(defineStart, '\n');
+    if (defineEnd == NULL)
+    {
+        return 0;
+    }
+    memmove(defineStart, defineEnd, strlen(defineEnd) + 1);
+    return 1;
+}
