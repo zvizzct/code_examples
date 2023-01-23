@@ -7,7 +7,7 @@ int main(int argc, char **argv)
 {
     // Variables
     FILE *file;
-    char *fileName, *fileContent, c, *outFileName;
+    char *fileName, *preprocesedFileContent, *fileContent, c, *outFileName;
     int fd;
 
     // Get file name from command line argument
@@ -26,14 +26,16 @@ int main(int argc, char **argv)
     fileContent = readFile(file);
 
     // preproces defines
-    directivesDefine2(fileContent);
+    preprocesedFileContent = directivesDefine(fileContent);
 
     // write prepcocesed content to file
-    outFileName = writeFile(fileName, fileContent);
-
+    outFileName = writeFile(fileName, preprocesedFileContent);
     printf("Preprocesed file is in %s\n", outFileName);
+
     // Free memory and close file
     free(fileContent);
+
+    // Close file
     fclose(file);
 
     return 0;

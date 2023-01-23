@@ -37,60 +37,51 @@ void directivesInclude()
 // ------------------------------
 
 /*
-This function uses nested loops to iterate through the array of DefineDirective
-structs and the given file content.
-For each struct in the array,it compares its name with a substring of the given
-file content starting from the current index.
-If a match is found, the function replaces the substring with the value of the struct,
-and shift the rest of the file content to fill the gap.
+This function takes in a char* fileContent representing the string to be modified,
+an array of DefineDirective structs defines, and an int defineCount representing the number of
+DefineDirective structs in the array.
+The function iterates through the array of DefineDirective structs, and for each struct, it uses
+the strstr function to find all occurrences of the struct's name field in the fileContent string.
+If an occurrence is found, the function checks if the character before or after the occurrence is
+alphanumeric, if so it continues to the next occurrence, otherwise it replaces the occurrence with
+the corresponding value of the value field of the DefineDirective struct.
+The function then returns the modified fileContent string.
 */
 
 /**
- * @brief Replace all occurances of a define directive name in a file content with its
- * corresponding value
+ * @brief Replaces all occurences of a defined directive in a string with its corresponding value.
  *
- * @param fileContent A pointer to the string which will be modified
- * @param defines Pointer to an array of DefineDirective structs
- * @param defineCount The number of DefineDirective structs in the array
- *
+ * @param fileContent The string to be modified
+ * @param defines An array of DefineDirective structs
+ * @param defineCount Number of DefineDirective structs in the array
+ * @return char* The modified string
  */
-void replaceDirectivesDefine(char *fileContent, struct DefineDirective *defines, int defineCount)
+char *replaceDirectives(char *fileContent, struct DefineDirective defines[], int defineCount)
 {
-
-    int i, j, k, match, nameLen, valueLen, contentLen = strlen(fileContent);
-    char *name, *value;
-    for (i = 0; i < contentLen; i++)
+    for (int i = 0; i < defineCount; i++)
     {
-        for (j = 0; j < defineCount; j++)
+        char *defineName = defines[i].name;
+        char *defineValue = defines[i].value;
+        char *occurrence = strstr(fileContent, defineName);
+        while (occurrence != NULL)
         {
-            name = defines[j].name;
-            nameLen = strlen(name);
-            match = 1;
-            for (k = 0; k < nameLen; k++)
+            if (isalnum(*(occurrence - 1)) || isalnum(*(occurrence + strlen(defineName))))
             {
-                if (fileContent[i + k] != name[k])
-                {
-                    match = 0;
-                    break;
-                }
+                occurrence = strstr(occurrence + strlen(defineName), defineName);
+                continue;
             }
-            if (match)
-            {
-                value = defines[j].value;
-                valueLen = strlen(value);
-                for (k = 0; k < valueLen; k++)
-                {
-                    fileContent[i + k] = value[k];
-                }
-                for (k = i + valueLen; k < contentLen; k++)
-                {
-                    fileContent[k] = fileContent[k + nameLen - valueLen];
-                }
-                break;
-            }
+            int remainingLen = strlen(occurrence) - strlen(defineName);
+            char *newString = malloc(strlen(fileContent) - strlen(defineName) + strlen(defineValue) + 1);
+            memcpy(newString, fileContent, occurrence - fileContent);
+            strcat(newString, defineValue);
+            strcat(newString, occurrence + strlen(defineName));
+            fileContent = newString;
+            occurrence = strstr(fileContent, defineName);
         }
     }
+    return fileContent;
 }
+
 /*
 This function uses nested loops to iterate through the array of DefineDirective structs.
 For each struct, it compares its name to the value of all other structs.
@@ -119,7 +110,23 @@ void changeStructDirectivesDefine(struct DefineDirective *defines, int *defineCo
         }
     }
 }
+/*
+This function takes in a pointer to an array of DefineDirective structs defines
+and a pointer to an int defineCount, representing the number of DefineDirective
+structs in the array.
+The function iterates through the array of DefineDirective structs, and for each
+struct, it checks if the first and last characters of the struct's value field
+are '(' and ')' respectively.
+If the condition is true, the function removes that struct from the array by
+shifting all the following elements one position back and decreasing the defineCount.
+*/
 
+/**
+ * @brief Removes all DefineDirective structs whose value is enclosed in parentheses.
+ *
+ * @param defines Pointer to an array of DefineDirective structs
+ * @param defineCount Pointer to an integer representing the number of DefineDirective structs in the array
+ */
 void removeParenthesisDefine(struct DefineDirective *defines, int *defineCount)
 {
     for (int i = 0; i < *defineCount; i++)
@@ -135,6 +142,22 @@ void removeParenthesisDefine(struct DefineDirective *defines, int *defineCount)
         }
     }
 }
+
+/*
+This function takes in a pointer to an array of DefineDirective structs defines and a
+pointer to an int defineCount, representing the number of DefineDirective structs in the array.
+The function iterates through the array of DefineDirective structs, and for each struct,
+it checks if the first and last characters of the struct's value field are '(' and ')' respectively.
+If the condition is true, the function removes that struct from the array by shifting
+all the following elements one position back and decreasing the defineCount.
+*/
+
+/**
+ * @brief Removes all DefineDirective structs whose value is enclosed in parentheses.
+ *
+ * @param defines Pointer to an array of DefineDirective structs
+ * @param defineCount Pointer to an integer representing the number of DefineDirective structs in the array
+ */
 void removeAfterLastStringDefine(struct DefineDirective *defines, int *defineCount)
 {
 
@@ -149,11 +172,34 @@ void removeAfterLastStringDefine(struct DefineDirective *defines, int *defineCou
         }
     }
 }
-void directivesDefine2(char *fileContent)
+
+/*
+The function takes in a char* fileContent representing the string to be processed.
+It initializes an array of DefineDirective structs defines and an int defineCount to 0.
+It then uses the strstr function to find all occurrences of "#define" in the fileContent string.
+If an occurrence is found, the function uses the strlen function to find the start of the name
+and the value of the define directive.
+It then copies the name and value of the define directive to the corresponding fields of the
+DefineDirective struct and increments the defineCount.
+The function then calls the removeParenthesisDefine(), removeAfterLastStringDefine() and
+changeStructDirectivesDefine() function to process the extracted define directives, and the
+replaceDirectives() function to replace all occurrences of the define directive names with
+their corresponding values in the fileContent string.
+*/
+
+/**
+ * @brief Processes a string to find and extract "#define" directives and their corresponding values
+ *
+ * @param fileContent The string to be processed
+ * @return char* The modified string
+ */
+char *directivesDefine(char *fileContent)
 {
     struct DefineDirective defines[MAX_DEFINES] = {0};
     int defineCount = 0;
+    char *temp;
     char *lineStart = fileContent;
+    char *newFileContent;
     while (lineStart != NULL)
     {
         lineStart = strstr(lineStart, "#define ");
@@ -194,11 +240,11 @@ void directivesDefine2(char *fileContent)
         memcpy(defines[defineCount].value, valueStart, valueLen);
         defines[defineCount].name[nameLen] = '\0';
         defines[defineCount].value[valueLen] = '\0';
-        // remove_define2(fileContent, defines[defineCount].name);
         defineCount++;
         lineStart = valueEnd;
+        temp = lineStart;
     }
-
+    fileContent = temp;
     if (defineCount == 0)
     {
         printf("No matches found");
@@ -209,11 +255,9 @@ void directivesDefine2(char *fileContent)
         removeParenthesisDefine(defines, &defineCount);
         removeAfterLastStringDefine(defines, &defineCount);
         changeStructDirectivesDefine(defines, &defineCount);
-        for (int i = 0; i < defineCount; i++)
-        {
-            printf("name: %s, value: %s\n", defines[i].name, defines[i].value);
-        }
+        newFileContent = replaceDirectives(fileContent, defines, defineCount);
     }
+    return newFileContent;
 }
 
 // ------------------------------
@@ -254,19 +298,3 @@ void eliminateComments()
 {
 }
 // ------------------------------
-
-int remove_define2(char *fileContent, char *defineName)
-{
-    char *defineStart = strstr(fileContent, defineName);
-    if (defineStart == NULL)
-    {
-        return 0;
-    }
-    char *defineEnd = strchr(defineStart, '\n');
-    if (defineEnd == NULL)
-    {
-        return 0;
-    }
-    memmove(defineStart, defineEnd, strlen(defineEnd) + 1);
-    return 1;
-}
