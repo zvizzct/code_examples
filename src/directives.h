@@ -201,7 +201,7 @@ char *directivesDefine(char *fileContent)
     char *lineStart = fileContent;
     char *newFileContent;
     while (lineStart != NULL)
-    {
+    { // coment
         lineStart = strstr(lineStart, "#define ");
         if (lineStart == NULL)
         {
