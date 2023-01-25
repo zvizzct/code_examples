@@ -174,6 +174,46 @@ void removeAfterLastStringDefine(struct DefineDirective *defines, int *defineCou
 }
 
 /*
+The function takes in a char* fileContent representing the string to be
+processed. It initializes a pointer "lineStart" to the beginning of the fileContent
+string and a pointer "defineStart". It uses a while loop to search for occurrences of
+"#define " in the fileContent string using the strstr function. If an occurrence is found,
+the function uses the strchr function to find the start of the next line after the
+define directive. It then uses the memmove function to remove the define directive
+from the fileContent string by moving the characters after the directive to the location
+of the directive. The loop continues until there are no more occurrences of "#define"
+found in the fileContent string.
+*/
+
+/**
+ * @brief Removes all #define directives from a string.
+ *
+ * @param fileContent The file content to be modified
+ */
+void removeDefines(char *fileContent)
+{
+    char *lineStart = fileContent;
+    char *defineStart;
+    while (lineStart != NULL)
+    {
+        defineStart = strstr(lineStart, "#define ");
+        if (defineStart == NULL)
+        {
+            break;
+        }
+        char *nextLineStart = strchr(defineStart, '\n');
+        if (nextLineStart == NULL)
+        {
+            *defineStart = '\0';
+            break;
+        }
+        int len = nextLineStart - defineStart + 1;
+        memmove(defineStart, nextLineStart + 1, strlen(nextLineStart));
+        lineStart = defineStart;
+    }
+}
+
+/*
 The function takes in a char* fileContent representing the string to be processed.
 It initializes an array of DefineDirective structs defines and an int defineCount to 0.
 It then uses the strstr function to find all occurrences of "#define" in the fileContent string.
@@ -197,7 +237,6 @@ char *directivesDefine(char *fileContent)
 {
     struct DefineDirective defines[MAX_DEFINES] = {0};
     int defineCount = 0;
-    char *temp;
     char *lineStart = fileContent;
     char *newFileContent;
     while (lineStart != NULL)
@@ -242,9 +281,7 @@ char *directivesDefine(char *fileContent)
         defines[defineCount].value[valueLen] = '\0';
         defineCount++;
         lineStart = valueEnd;
-        temp = lineStart;
     }
-    fileContent = temp;
     if (defineCount == 0)
     {
         printf("No matches found");
@@ -252,6 +289,7 @@ char *directivesDefine(char *fileContent)
     }
     else
     {
+        removeDefines(fileContent);
         removeParenthesisDefine(defines, &defineCount);
         removeAfterLastStringDefine(defines, &defineCount);
         changeStructDirectivesDefine(defines, &defineCount);
