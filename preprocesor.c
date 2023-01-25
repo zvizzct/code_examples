@@ -26,7 +26,8 @@ int main(int argc, char **argv)
     fileContent = readFile(file);
 
     // preproces defines
-    preprocesedFileContent = directivesDefine(fileContent);
+    // preprocesedFileContent = directivesDefine(fileContent);
+    preprocesedFileContent = directivesInclude(fileContent);
 
     // write prepcocesed content to file
     outFileName = writeFile(fileName, preprocesedFileContent);

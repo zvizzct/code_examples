@@ -27,8 +27,60 @@ struct DefineDirective
 // START OF 1.A) #include
 // ------------------------------
 // TODO: 1.A) #include
-void directivesInclude()
+
+char *processFileName(char *fileName)
 {
+    int len = strlen(fileName);
+    char *newFileName = malloc(len + strlen("examples"));
+    strcpy(newFileName, "examples");
+    if (fileName[0] == '.')
+    {
+        strcat(newFileName, fileName + 1);
+    }
+    else
+    {
+        strcat(newFileName, fileName);
+    }
+    return newFileName;
+}
+
+char *directivesInclude(char *fileContent)
+{
+    char *includeStart = strstr(fileContent, "#include");
+    while (includeStart != NULL)
+    {
+        char *newFileContent, *updatedFileContent;
+        char *fileStart = strchr(includeStart, '"');
+        if (fileStart == NULL)
+        {
+            break;
+        }
+        char *fileEnd = strchr(fileStart + 1, '"');
+        if (fileEnd == NULL)
+        {
+            break;
+        }
+        int len = fileEnd - fileStart - 1;
+        char *fileName = (char *)malloc(sizeof(char) * (len + 1));
+        memcpy(fileName, fileStart + 1, len);
+        fileName[len] = '\0';
+        char *fullName = processFileName(fileName);
+        printf("%s\n", fullName);
+
+        // Open the file here
+        FILE *fp = fopen(fullName, "r");
+        if (fp == NULL)
+        {
+            printf("Error opening file: %s\n", fullName);
+            exit(1);
+        }
+        newFileContent = readFile(fp);
+
+        fclose(fp);
+        free(fileName);
+        includeStart = strstr(fileEnd, "#include");
+    }
+    return fileContent;
 }
 // ------------------------------
 
@@ -56,7 +108,7 @@ The function then returns the modified fileContent string.
  * @param defineCount Number of DefineDirective structs in the array
  * @return char* The modified string
  */
-char *replaceDirectives(char *fileContent, struct DefineDirective defines[], int defineCount)
+char *replaceDefine(char *fileContent, struct DefineDirective defines[], int defineCount)
 {
     for (int i = 0; i < defineCount; i++)
     {
@@ -190,7 +242,7 @@ found in the fileContent string.
  *
  * @param fileContent The file content to be modified
  */
-void removeDefines(char *fileContent)
+void removeDefine(char *fileContent)
 {
     char *lineStart = fileContent;
     char *defineStart;
@@ -289,11 +341,11 @@ char *directivesDefine(char *fileContent)
     }
     else
     {
-        removeDefines(fileContent);
+        removeDefine(fileContent);
         removeParenthesisDefine(defines, &defineCount);
         removeAfterLastStringDefine(defines, &defineCount);
         changeStructDirectivesDefine(defines, &defineCount);
-        newFileContent = replaceDirectives(fileContent, defines, defineCount);
+        newFileContent = replaceDefine(fileContent, defines, defineCount);
     }
     return newFileContent;
 }
