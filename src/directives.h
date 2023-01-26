@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+// #include "utilsFiles.h"
+
 #define MAX_DEFINES 100
 #define MAX_NAME_LEN 100
 /*
@@ -27,11 +29,36 @@ struct DefineDirective
 // START OF 1.A) #include
 // ------------------------------
 // TODO: 1.A) #include
+char *replaceInclude(char *fileContent, char *newFileContent, char *fileName)
+{
+    char *includeLine = "#include";
+    char *includeFile = malloc(strlen(fileName) + 3);
+    sprintf(includeFile, "\"%s\"", fileName);
+    char *include = malloc(strlen(includeLine) + strlen(includeFile) + 3); // +3 for quotes and whitespace and null char
+    sprintf(include, "%s %s", includeLine, includeFile);
+    char *start, *end;
+    start = strstr(fileContent, include);
+    end = start + strlen(include);
+    char *result = malloc(strlen(fileContent) + strlen(newFileContent) + 1);
+    if (start != NULL)
+    {
+        strncpy(result, fileContent, start - fileContent);
+        strcpy(result + (start - fileContent), newFileContent);
+        strcpy(result + (start - fileContent) + strlen(newFileContent), end);
+    }
+    else
+    {
+        strcpy(result, fileContent);
+    }
+    free(include);
+    free(includeFile);
+    return result;
+}
 
-char *processFileName(char *fileName)
+char *processFileNameInclude(char *fileName)
 {
     int len = strlen(fileName);
-    char *newFileName = malloc(len + strlen("examples"));
+    char *newFileName = malloc(len + 9);
     strcpy(newFileName, "examples");
     if (fileName[0] == '.')
     {
@@ -46,10 +73,11 @@ char *processFileName(char *fileName)
 
 char *directivesInclude(char *fileContent)
 {
+    char *updatedFileContent = fileContent;
     char *includeStart = strstr(fileContent, "#include");
     while (includeStart != NULL)
     {
-        char *newFileContent, *updatedFileContent;
+        char *newFileContent;
         char *fileStart = strchr(includeStart, '"');
         if (fileStart == NULL)
         {
@@ -64,24 +92,23 @@ char *directivesInclude(char *fileContent)
         char *fileName = (char *)malloc(sizeof(char) * (len + 1));
         memcpy(fileName, fileStart + 1, len);
         fileName[len] = '\0';
-        char *fullName = processFileName(fileName);
-        printf("%s\n", fullName);
+        char *fullName = processFileNameInclude(fileName);
 
         // Open the file here
         FILE *fp = fopen(fullName, "r");
-        if (fp == NULL)
+        if (fp != NULL)
         {
-            printf("Error opening file: %s\n", fullName);
-            exit(1);
+            newFileContent = readFile(fp);
+            updatedFileContent = replaceInclude(updatedFileContent, newFileContent, fileName);
+            fclose(fp);
         }
-        newFileContent = readFile(fp);
 
-        fclose(fp);
         free(fileName);
         includeStart = strstr(fileEnd, "#include");
     }
-    return fileContent;
+    return updatedFileContent;
 }
+
 // ------------------------------
 
 // ------------------------------
@@ -150,7 +177,6 @@ the value of the first struct to the second struct.
  */
 void changeStructDirectivesDefine(struct DefineDirective *defines, int *defineCount)
 {
-
     for (int i = 0; i < *defineCount; i++)
     {
         for (int j = 0; j < *defineCount; j++)
@@ -212,7 +238,6 @@ all the following elements one position back and decreasing the defineCount.
  */
 void removeAfterLastStringDefine(struct DefineDirective *defines, int *defineCount)
 {
-
     for (int i = 0; i < *defineCount; i++)
     {
         for (int j = 0; j < strlen(defines[i].value); j++)
