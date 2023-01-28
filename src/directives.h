@@ -436,8 +436,125 @@ char *directivesDefine(char *fileContent)
 // START OF 1.C) #ifndef - #endif
 // ---------------------------------------------------------------------------------------
 // TODO: 1.C) #ifdef - #endif
-void directivesIfdef()
+/**
+ * @brief Replaces all occurences of a if directive in a string with its corresponding instructions if condition is true, 
+ * otherwise the if directive is just removed.
+ *
+ * @param fileContent The string to be modified
+ * @param condition The result of the if directive condition
+ * @return char* The modified string
+ */
+char* replaceIfdef(char *fileContent, int condition) 
 {
+    char *newContent;
+    char *ifStart = strstr(fileContent, "#if");
+    char *ifEnd = strstr(ifStart, "#endif");
+    if (condition) {
+        // First part of the file
+        char *ifStart = strstr(fileContent, "#if");
+        int firstPartEnd = ifStart - fileContent;
+
+        // Directive part
+        char *ifInstructionStart = strstr(ifStart, "\n") + 1;
+        int len = ifEnd - 1 - ifInstructionStart;
+        char *directive= malloc(sizeof(char) * len);
+        memcpy(directive, ifInstructionStart, len);
+        directive[len] = '\0';
+
+        // Second part of the file
+        char *secondPartStart = strstr(ifEnd, "\n");
+
+        // Build new content without #if and #endif
+        newContent = malloc(strlen(fileContent));
+        memcpy(newContent, fileContent, firstPartEnd);
+        strcat(newContent, directive);
+        strcat(newContent, secondPartStart);
+        free(directive);
+    }
+    else {
+        // First part of the file
+        int firstPartEnd = ifStart - fileContent-1;
+
+        // Second part of the file
+        char *secondPartStart = strstr(ifEnd, "\n");
+
+        // Build new content without #if and #endif
+        newContent = malloc(strlen(fileContent));
+        memcpy(newContent, fileContent, firstPartEnd);
+        strcat(newContent, secondPartStart);
+    }
+    return newContent;
+}
+
+/**
+ * @brief Processes a string to find and extract "#if #endif" directives and their conditions expression
+ *
+ * @param fileContent The string to be processed
+ * @return char* The modified string
+ */
+char* directivesIfdef(char *fileContent)
+{
+    char *ifStart = strstr(fileContent, "#if");
+    while (ifStart != NULL)
+    {
+        // Recovery of the left value
+        char *leftValueStart = ifStart + strlen("#if ");
+        if (leftValueStart == NULL)
+        {
+            break;
+        }
+        if (*leftValueStart == '(') leftValueStart++;
+        char *leftValueEnd = leftValueStart;
+        while (isalnum(*leftValueEnd) || *leftValueEnd == '_')
+        {
+            leftValueEnd++;
+        }
+        if (leftValueStart == leftValueEnd)
+        {
+            ifStart = leftValueEnd;
+        }
+        int lenLeftValue = leftValueEnd - leftValueStart;
+
+        // Recovery of the right value
+        char *rightValueStart = leftValueEnd + strlen(" == ");
+        if (rightValueStart == NULL)
+        {
+            break;
+        }
+        char *rightValueEnd = rightValueStart;
+        while (isalnum(*rightValueEnd) || *rightValueEnd == '_')
+        {
+            rightValueEnd++;
+        }
+        if (rightValueStart == rightValueEnd)
+        {
+            ifStart = rightValueEnd;
+        }
+        int lenRightValue = rightValueEnd - rightValueStart;
+
+        char *leftValue = malloc(sizeof(char) * lenLeftValue);
+        memcpy(leftValue, leftValueStart, lenLeftValue);
+        leftValue[lenLeftValue] = '\0';
+        char *rightValue = malloc(sizeof(char) * lenRightValue);
+        memcpy(rightValue, rightValueStart, lenRightValue);
+        rightValue[lenRightValue] = '\0';
+        
+        // Conversion from string to int 
+        int intLeftValue;
+        int intRightValue;
+        sscanf(leftValue, "%d", &intLeftValue);
+        sscanf(rightValue, "%d", &intRightValue);
+
+        free(leftValue);
+        free(rightValue);
+
+        // Evaluation of the condition
+        int condition = intLeftValue == intRightValue;
+        fileContent = replaceIfdef(fileContent, condition);
+
+        ifStart = strstr(rightValueEnd, "#if");
+    }
+    return fileContent;
 }
 
 // ---------------------------------------------------------------------------------------

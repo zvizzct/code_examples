@@ -28,6 +28,7 @@ int main(int argc, char **argv)
     // preproces defines
     // preprocesedFileContent = directivesInclude(fileContent);
     // newContent = directivesDefine(preprocesedFileContent);
+    //newContent = directivesIfdef(newContent);
     newContent = removeComments(fileContent);
 
     // write prepcocesed content to file
