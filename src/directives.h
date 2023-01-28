@@ -461,6 +461,33 @@ void operatorBackslash()
 // ---------------------------------------------------------------------------------------
 
 // TODO: 4) Eliminate comments and replace each of them by a space (empty lines are not eliminated)
-void eliminateComments()
+
+/**
+ * @brief Removes comments from a string
+ *
+ * @param fileContent The fileContent to be processed
+ */
+void removeComments(char *fileContent)
 {
+    int i, j;
+    // Iterate through the file contents
+    for (i = 0; fileContent[i] != '\0'; i++)
+    {
+        // Check for single line comments
+        if (fileContent[i] == '/' && fileContent[i + 1] == '/')
+        {
+            // Replace the rest of the line with spaces
+            for (j = i; fileContent[j] != '\n'; j++)
+                fileContent[j] = ' ';
+        }
+        // Check for multi-line comments
+        if (fileContent[i] == '/' && fileContent[i + 1] == '*')
+        {
+            // Replace the comment with spaces
+            for (j = i; !(fileContent[j] == '*' && fileContent[j + 1] == '/'); j++)
+                fileContent[j] = ' ';
+            fileContent[j] = ' ';
+            fileContent[j + 1] = ' ';
+        }
+    }
 }
