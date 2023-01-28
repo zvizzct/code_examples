@@ -3,6 +3,11 @@
  * Practice 1: c pre-processor
  * Example files: comp-p1.h, comp-p1.c
  */
+// lol
+/* lol */
+/*
+lol
+*/
 #include "./comp-p1.h"
 #include <string.h>
 int main(int argc, char **argv)

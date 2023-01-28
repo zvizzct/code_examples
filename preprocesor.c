@@ -26,10 +26,10 @@ int main(int argc, char **argv)
     fileContent = readFile(file);
 
     // preproces defines
-    preprocesedFileContent = directivesInclude(fileContent);
-    newContent = directivesDefine(preprocesedFileContent);
-    newContent = directivesIfdef(newContent);
-    // printf("Preprocesed file content:%s", preprocesedFileContent);
+    // preprocesedFileContent = directivesInclude(fileContent);
+    // newContent = directivesDefine(preprocesedFileContent);
+    //newContent = directivesIfdef(newContent);
+    newContent = removeComments(fileContent);
 
     // write prepcocesed content to file
     outFileName = writeFile(fileName, newContent);

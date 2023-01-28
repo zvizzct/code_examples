@@ -11,6 +11,7 @@
 
 #define PRINTDESTFILE "out.txt"     // file destination of normal program print: stdout/out.txt
 #define PRINTERRORFILE "errmsg.txt" // file destination of normal program print: errmsg.txt
+#define ERRORMSG "This is a large long message as example"
 
 #define N 2
 #define PRINTWARNING ON // ON = Yes OFF / NO
