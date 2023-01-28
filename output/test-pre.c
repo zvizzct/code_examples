@@ -11,6 +11,9 @@
 
 #include <stdio.h>
 
+
+
+
 // MACROS used for the printouts instead of using f/printfs so that all prints
 // in the program are treated the same way.
 // Use ERROR when the print out informs of a ERROR/problem in the program and it must finish the program
@@ -43,12 +46,12 @@ int main(int argc, char **argv)
     for (i = 0; i < argc; i++)
     {
         fprintf(ofile, "%i: %s\n", i, argv[i]);
-#if (1 == 1)
+#if (1 == 1)
         WARNING(i, (errfile, "warning print example %s \n", argv[i]));
 #endif
     }
 
-#if (1 == 1)
+#if (1 == 1)
     ERROR(i, (errfile, "This is an error, and it stops"));
 #endif
 

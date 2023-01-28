@@ -2,13 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h> //
 
-/*
-The function takes in a char* which represents the name of the file to be opened. If the provided file name
-is NULL, the function will print a message and return NULL. If the file could not be opened, the function will
-print a message and return NULL. If the file is successfully opened, the function will return a pointer to the
-opened file.
-*/
-
 /**
  * @brief Open a file with a provided name
  *
@@ -17,28 +10,24 @@ opened file.
  */
 FILE *openFile(char *fileName)
 {
+    // Check if fileName is NULL, if it is, print an error message and return NULL
     if (fileName == NULL)
     {
         printf("No file provided, usage: ./preprocesor filename.c");
         return NULL;
     }
+    // Try to open the file with the given fileName in read mode
     FILE *fptr = fopen(fileName, "r");
 
+    // If the file doesn't exist, print an error message and return NULL
     if (fptr == NULL)
     {
         printf("File does not exist %s", fileName);
         return NULL;
     }
+    // If file exists, return the file pointer
     return fptr;
 }
-
-/*
-The function takes in a FILE* which represents the file to be read. If the provided file is
-NULL, the function will print a message and return NULL. The function uses fseek, ftell
-and rewind to get the size of the file, then it uses malloc to allocate memory to store
-the file content. The function reads the file using fread and adds a null character at the
-end of the content. It returns the content of the file as a string.
- */
 
 /**
  * @brief Read the content of a file and return it as a string
@@ -48,6 +37,7 @@ end of the content. It returns the content of the file as a string.
  */
 char *readFile(FILE *file)
 {
+    // Check if file is NULL, if it is, print an error message and return NULL
     if (file == NULL)
     {
         printf("No file provided, usage: ./preprocesor filename.c");
@@ -57,22 +47,13 @@ char *readFile(FILE *file)
     fseek(file, 0, SEEK_END);
     long fileSize = ftell(file);
     rewind(file);
-
-    // Allocate memory to store the file contents
+    // Allocate memory for file content
     char *fileContent = (char *)malloc((fileSize + 1) * sizeof(char));
-
-    // Read the file into memory
+    // Read the file
     fread(fileContent, sizeof(char), fileSize, file);
     fileContent[fileSize] = '\0';
     return fileContent;
 }
-
-/*
-The function takes in a char* which represents the name of the file. It checks if the provided
-file name is NULL. It then uses strrchr to search for the last occurrence of '/' or '' in the
-file name, if either are found it returns a pointer to the character after the last occurrence,
-otherwise it returns the original file name.
-*/
 
 /**
  * @brief  Extract the base name of a file from a provided file name
@@ -82,35 +63,33 @@ otherwise it returns the original file name.
  */
 char *baseName(const char *fileName)
 {
+    // Initialize base to NULL
     char *base = NULL;
 
+    // If fileName is not NULL
     if (fileName != NULL)
     {
+        // Find the last '/' in fileName
         base = strrchr(fileName, '/');
+        // If '/' is not found
         if (base == NULL)
         {
+            // Find the last '\' in fileName
             base = strrchr(fileName, '\\');
         }
     }
-
+    // If base is still NULL
     if (base == NULL)
     {
+        // Return fileName
         return (char *)fileName;
     }
     else
     {
+        // Return the filename after the last '/' or '\'
         return base + 1;
     }
 }
-
-/*
- The function takes in a char* which represents the original file name. It uses malloc to
- allocate memory to store the new file name. It uses strrchr to find the last occurrence
- of '.' in the file name, and it checks if it's a ".c" or ".h" extension. If the extension is ".c"
- or ".h" it creates a new file name by copying the original file name up to the '.',
- appending "-pre" and then the extension. If it doesn't find the extension or it's not .c or
- .h it will return the original file name. It returns the new file name.
- */
 
 /**
  * @brief Generate a new file name by appending "-pre" to the original file name before its extension
@@ -120,32 +99,30 @@ char *baseName(const char *fileName)
  */
 char *getNewFileName(const char *fileName)
 {
+    // Allocate memory for newFileName
     char *newFileName = malloc(sizeof(char) * 256);
+    // Find the last occurrence of '.' in fileName
     char *dot = strrchr(fileName, '.');
-    if (dot && (!strcmp(dot, ".c") || !strcmp(dot, ".h")))
+    // If '.' is found and the extension is .c
+    if (dot && (!strcmp(dot, ".c")))
     {
+        // Copy the substring of fileName before '.' to newFileName
         strncpy(newFileName, fileName, dot - fileName);
+        // Add null character at the end of the substring
         newFileName[dot - fileName] = 0;
+        // Append "-pre" to newFileName
         strcat(newFileName, "-pre");
+        // Append the extension to newFileName
         strcat(newFileName, dot);
     }
     else
     {
+        // If '.' is not found or the extension is not .c, just copy the fileName to newFileName
         strcpy(newFileName, fileName);
     }
+    // return the newFileName
     return newFileName;
 }
-
-/*
-The function takes in two char* which represents the name of the file to create/write
-to and the content to write to the file. It checks if the provided file name or content is
-NULL, if it is the function will print an error message and return 1. The function creates
-a new file name by appending "-pre.c" or "-pre-h" to the original file name if the original
-file name is a .c or .h file, otherwise the function will use the original file name.
-The function uses fopen to create the file with "w" mode. It uses fwrite to write the
-content to the file. If fwrite returns a negative value, the function will print an error
-message, close the file, and return the filename with the "-pre" prefix.
-*/
 
 /**
  * @brief Write a string to a file with a provided name
@@ -156,25 +133,37 @@ message, close the file, and return the filename with the "-pre" prefix.
  */
 char *writeFile(char *fileName, char *fileContent)
 {
+    // check if fileName or fileContent is NULL
     if (fileName == NULL || fileContent == NULL)
     {
+        // if so, print an error message and return
         printf("No file name or content provided, usage: ./preprocesor filename.c");
         return 1;
     }
+    // get the base name of the file
     char *base = baseName(fileName);
+    // get the new file name
     char *newFileName = getNewFileName(base);
 
+    // create a string for the output folder
     char *outputFolder = "output/";
+    // allocate memory for the new file name with folder
     char *newFileNameWithFolder = malloc(sizeof(char) * (strlen(outputFolder) + strlen(newFileName) + 1));
 
+    // copy the output folder to newFileNameWithFolder
     strcpy(newFileNameWithFolder, outputFolder);
+    // concatenate the new file name to newFileNameWithFolder
     strcat(newFileNameWithFolder, newFileName);
 
+    // open the new file for writing
     FILE *fptr = fopen(newFileNameWithFolder, "w");
+    // check if there was an error writing to the file
     if (fwrite(fileContent, sizeof(char), strlen(fileContent), fptr) < 0)
     {
         printf("Error writing to file %s", newFileNameWithFolder);
     }
+    // close the file
     fclose(fptr);
+    // return the new file name with folder
     return newFileNameWithFolder;
 }
