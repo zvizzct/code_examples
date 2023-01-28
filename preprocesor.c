@@ -32,7 +32,10 @@ int main(int argc, char **argv)
 
     // write prepcocesed content to file
     outFileName = writeFile(fileName, newContent);
-    printf("Preprocesed file saved in %s", outFileName);
+    printf("\n");
+    printf("-------------------------------------------------------------\n");
+    printf("-------- Preprocesed file saved in %s --------\n", outFileName);
+    printf("-------------------------------------------------------------\n");
 
     // Free memory and close file
     free(fileContent);

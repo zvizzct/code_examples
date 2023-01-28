@@ -46,12 +46,12 @@ int main(int argc, char **argv)
     for (i = 0; i < argc; i++)
     {
         fprintf(ofile, "%i: %s\n", i, argv[i]);
-#if (1 == 1)
+#if (1 == 1)
         WARNING(i, (errfile, "warning print example %s \n", argv[i]));
 #endif
     }
 
-#if (1 == 1)
+#if (1 == 1)
     ERROR(i, (errfile, "This is an error, and it stops"));
 #endif
 
