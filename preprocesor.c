@@ -8,11 +8,15 @@ int main(int argc, char **argv)
     // Variables
     FILE *file;
     char *fileName, *outFileName;
+    char *flag;
     char *fileContent, *preprocesedInclude, *preprocesedDefines, *preprocesedIfdef, *preprocesedComments;
     int fd;
 
     // Get file name from command line argument
     fileName = argv[1];
+
+    // Get flag from command line argument
+    flag = argv[2];
 
     // Open file
     file = openFile(fileName);
@@ -26,7 +30,27 @@ int main(int argc, char **argv)
     // Read file
     fileContent = readFile(file);
 
-    // preproces defines
+    if (strcmp(flag, "-c") == 0)
+    {
+        // Remove comments
+    }
+    else if (strcmp(flag, "-d") == 0)
+    {
+        // Remove directives
+    }
+    else if (strcmp(flag, "-all") == 0)
+    {
+        // Remove comments and directives
+    }
+    else if (strcmp(flag, "-help") == 0)
+    {
+        // Print help
+    }
+    else
+    {
+        printf("Invalid flag, please use -c, -d, -all or -help");
+    }
+
     preprocesedInclude = directivesInclude(fileContent);
     preprocesedDefines = directivesDefine(preprocesedInclude);
     preprocesedIfdef = directivesIfdef(preprocesedDefines);
