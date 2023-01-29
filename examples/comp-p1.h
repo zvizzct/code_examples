@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 
+#define lol
 #define ON 1
 #define OFF 0
 

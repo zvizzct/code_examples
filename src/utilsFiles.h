@@ -13,7 +13,6 @@ FILE *openFile(char *fileName)
     // Check if fileName is NULL, if it is, print an error message and return NULL
     if (fileName == NULL)
     {
-        printf("No file provided, usage: ./preprocesor filename.c");
         return NULL;
     }
     // Try to open the file with the given fileName in read mode
@@ -22,7 +21,7 @@ FILE *openFile(char *fileName)
     // If the file doesn't exist, print an error message and return NULL
     if (fptr == NULL)
     {
-        printf("File does not exist %s", fileName);
+        printf("File does not exist %s\n", fileName);
         return NULL;
     }
     // If file exists, return the file pointer
