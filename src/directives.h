@@ -437,19 +437,20 @@ char *directivesDefine(char *fileContent)
 // ---------------------------------------------------------------------------------------
 // TODO: 1.C) #ifdef - #endif
 /**
- * @brief Replaces all occurences of a if directive in a string with its corresponding instructions if condition is true, 
+ * @brief Replaces all occurences of a if directive in a string with its corresponding instructions if condition is true,
  * otherwise the if directive is just removed.
  *
  * @param fileContent The string to be modified
  * @param condition The result of the if directive condition
  * @return char* The modified string
  */
-char* replaceIfdef(char *fileContent, int condition) 
+char *replaceIfdef(char *fileContent, int condition)
 {
     char *newContent;
     char *ifStart = strstr(fileContent, "#if");
     char *ifEnd = strstr(ifStart, "#endif");
-    if (condition) {
+    if (condition)
+    {
         // First part of the file
         char *ifStart = strstr(fileContent, "#if");
         int firstPartEnd = ifStart - fileContent;
@@ -457,7 +458,7 @@ char* replaceIfdef(char *fileContent, int condition)
         // Directive part
         char *ifInstructionStart = strstr(ifStart, "\n") + 1;
         int len = ifEnd - 1 - ifInstructionStart;
-        char *directive= malloc(sizeof(char) * len);
+        char *directive = malloc(sizeof(char) * len);
         memcpy(directive, ifInstructionStart, len);
         directive[len] = '\0';
 
@@ -471,9 +472,10 @@ char* replaceIfdef(char *fileContent, int condition)
         strcat(newContent, secondPartStart);
         free(directive);
     }
-    else {
+    else
+    {
         // First part of the file
-        int firstPartEnd = ifStart - fileContent-1;
+        int firstPartEnd = ifStart - fileContent - 1;
 
         // Second part of the file
         char *secondPartStart = strstr(ifEnd, "\n");
@@ -492,7 +494,7 @@ char* replaceIfdef(char *fileContent, int condition)
  * @param fileContent The string to be processed
  * @return char* The modified string
  */
-char* directivesIfdef(char *fileContent)
+char *directivesIfdef(char *fileContent)
 {
     char *ifStart = strstr(fileContent, "#if");
     while (ifStart != NULL)
@@ -503,7 +505,8 @@ char* directivesIfdef(char *fileContent)
         {
             break;
         }
-        if (*leftValueStart == '(') leftValueStart++;
+        if (*leftValueStart == '(')
+            leftValueStart++;
         char *leftValueEnd = leftValueStart;
         while (isalnum(*leftValueEnd) || *leftValueEnd == '_')
         {
@@ -538,8 +541,8 @@ char* directivesIfdef(char *fileContent)
         char *rightValue = malloc(sizeof(char) * lenRightValue);
         memcpy(rightValue, rightValueStart, lenRightValue);
         rightValue[lenRightValue] = '\0';
-        
-        // Conversion from string to int 
+
+        // Conversion from string to int
         int intLeftValue;
         int intRightValue;
         sscanf(leftValue, "%d", &intLeftValue);
@@ -584,7 +587,7 @@ void operatorBackslash()
  *
  * @param fileContent The fileContent to be processed
  */
-void removeComments(char *fileContent)
+char *removeComments(char *fileContent)
 {
     int i, j;
     // Iterate through the file contents
@@ -607,4 +610,5 @@ void removeComments(char *fileContent)
             fileContent[j + 1] = ' ';
         }
     }
+    return fileContent;
 }
