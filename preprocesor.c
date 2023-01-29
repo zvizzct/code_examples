@@ -56,13 +56,13 @@ int main(int argc, char **argv)
 
     if (argc == 1)
         fileName = argv[1];
-    if (argc == 2)
+    else if (argc == 2)
         flag1 = argv[1], fileName = argv[2];
-    if (argc == 3)
+    else if (argc == 3)
+        flag1 = argv[1], fileName = argv[2];
+    else if (argc == 4)
         flag1 = argv[1], flag2 = argv[2], fileName = argv[3];
-    if (argc == 4)
-        flag1 = argv[1], flag2 = argv[2], flag3 = argv[3], fileName = argv[4];
-    if (argc == 5)
+    else if (argc == 5)
         flag1 = argv[1], flag2 = argv[2], flag3 = argv[3], fileName = argv[4];
 
     // Open file
