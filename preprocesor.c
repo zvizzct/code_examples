@@ -54,10 +54,8 @@ int main(int argc, char **argv)
 
     // Get file name from command line argument
 
-    if (argc == 1)
+    if (argc == 2)
         fileName = argv[1];
-    else if (argc == 2)
-        flag1 = argv[1], fileName = argv[2];
     else if (argc == 3)
         flag1 = argv[1], fileName = argv[2];
     else if (argc == 4)
