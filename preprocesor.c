@@ -8,15 +8,17 @@ int main(int argc, char **argv)
     // Variables
     FILE *file;
     char *fileName, *outFileName;
-    char *flag;
-    char *fileContent, *preprocesedInclude, *preprocesedDefines, *preprocesedIfdef, *preprocesedComments;
+    char *flag1 = NULL, *flag2 = NULL , *flag3 = NULL;
+    char *fileContent, *preprocesedContent;
     int fd;
 
     // Get file name from command line argument
     fileName = argv[1];
 
     // Get flag from command line argument
-    flag = argv[2];
+    if (argc == 3) flag1 = argv[2];
+    if (argc == 4) flag1 = argv[2], flag2 = argv[3];
+    if (argc == 5) flag1 = argv[2], flag2 = argv[3], flag3 = argv[4];
 
     // Open file
     file = openFile(fileName);
@@ -30,19 +32,28 @@ int main(int argc, char **argv)
     // Read file
     fileContent = readFile(file);
 
-    if (strcmp(flag, "-c") == 0)
+    if (flag1 == NULL || (strcmp(flag1, "-c") == 0 && flag2 == NULL && flag3 == NULL))
     {
         // Remove comments
+        preprocesedContent = removeComments(fileContent);
     }
-    else if (strcmp(flag, "-d") == 0)
+    else if (strcmp(flag1, "-d") == 0 && flag2 == NULL && flag3 == NULL)
     {
         // Remove directives
+        preprocesedContent = directivesInclude(fileContent);
+        preprocesedContent = directivesDefine(preprocesedContent);
+        preprocesedContent = directivesIfdef(preprocesedContent);
     }
-    else if (strcmp(flag, "-all") == 0)
+    else if (strcmp(flag1, "-all") == 0 || (strcmp(flag1, "-c") == 0 && strcmp(flag2, "-d") == 0)
+            ||  (strcmp(flag1, "-d") == 0 && strcmp(flag2, "-c") == 0) || strcmp(flag2, "-all") == 0 || strcmp(flag3, "-all") == 0)
     {
         // Remove comments and directives
+        preprocesedContent = directivesInclude(fileContent);
+        preprocesedContent = directivesDefine(preprocesedContent);
+        preprocesedContent = directivesIfdef(preprocesedContent);
+        preprocesedContent = removeComments(preprocesedContent);
     }
-    else if (strcmp(flag, "-help") == 0)
+    else if (strcmp(flag1, "-help") == 0)
     {
         // Print help
     }
@@ -51,13 +62,8 @@ int main(int argc, char **argv)
         printf("Invalid flag, please use -c, -d, -all or -help");
     }
 
-    preprocesedInclude = directivesInclude(fileContent);
-    preprocesedDefines = directivesDefine(preprocesedInclude);
-    preprocesedIfdef = directivesIfdef(preprocesedDefines);
-    preprocesedComments = removeComments(preprocesedIfdef);
-
     // write prepcocesed content to file
-    outFileName = writeFile(fileName, preprocesedComments);
+    outFileName = writeFile(fileName, preprocesedContent);
     printf("\n");
     printf("-------------------------------------------------------------\n");
     printf("-------- Preprocesed file saved in %s --------\n", outFileName);
