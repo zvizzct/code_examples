@@ -4,112 +4,12 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-// ---------------------------------------------------------------------------------------
-// START OF 2) Parametrized macros
-// ---------------------------------------------------------------------------------------
-// void replaceMacroWithValue(struct ParametrizedMacro macro, char *macroName, char *args[], char *fileContent)
-// {
-//     char newString[strlen(fileContent)];
-//     strcpy(newString, fileContent);
-
-//     char *macroCall = strstr(fileContent, macroName);
-//     while (macroCall != NULL)
-//     {
-//         char *macroCallEnd = macroCall + strlen(macroName);
-//         if (isalnum(*(macroCall - 1)) || isalnum(*macroCallEnd))
-//         {
-//             macroCall = strstr(macroCallEnd, macroName);
-//             continue;
-//         }
-
-//         // Check if the macro call has the correct number of arguments
-//         int openParenCount = 0;
-//         int closeParenCount = 0;
-//         while (*macroCallEnd != '\0')
-//         {
-//             if (*macroCallEnd == '(')
-//             {
-//                 openParenCount++;
-//             }
-//             else if (*macroCallEnd == ')')
-//             {
-//                 closeParenCount++;
-//             }
-//             if (openParenCount == closeParenCount)
-//             {
-//                 break;
-//             }
-//             macroCallEnd++;
-//         }
-//         if (openParenCount != closeParenCount)
-//         {
-//             macroCall = strstr(macroCallEnd, macroName);
-//             continue;
-//         }
-
-//         // Replace the macro call with the macro's body and arguments
-//         char replacement[strlen(macro.body)];
-//         strcpy(replacement, macro.body);
-//         for (int i = 0; i < macro.paramCount; i++)
-//         {
-//             char param[strlen(macro.params[i]) + 2];
-//             sprintf(param, "%c%s%c", '{', macro.params[i], '}');
-//             char *paramPlaceholder = strstr(replacement, param);
-//             if (paramPlaceholder == NULL)
-//             {
-//                 continue;
-//             }
-//             char newReplacement[strlen(replacement) - strlen(param) + strlen(args[i])];
-//             memcpy(newReplacement, replacement, paramPlaceholder - replacement);
-//             strcat(newReplacement, args[i]);
-//             strcat(newReplacement, paramPlaceholder + strlen(param));
-//             strcpy(replacement, newReplacement);
-//         }
-
-//         // Copy the replacement into the new string
-//         int lenToCopy = macroCall - fileContent;
-//         strncpy(newString, fileContent, lenToCopy);
-//         int lenOfReplacement = strlen(replacement);
-//         strncpy(newString + lenToCopy, replacement, lenOfReplacement);
-//         strcpy(newString + lenToCopy + lenOfReplacement, macroCallEnd);
-//         fileContent = newString;
-//         macroCall = strstr(fileContent, macroName);
-//     }
-// }
-
-// char *replaceParametrizedMacros(char *fileContent, struct ParametrizedMacro *macros, int macroCount)
-// {
-//     // Iterate over the parametrized macros
-//     for (int i = 0; i < macroCount; i++)
-//     {
-//         // Get the current macro's name and value
-//         char *macroName = macros[i].name;
-//         char *macroBody = macros[i].body;
-
-//         // Find the first occurrence of the macro name in the file content
-//         char *occurrence = strstr(fileContent, macroName);
-
-//         // Iterate over all occurrences of the macro name in the file content
-//         while (occurrence != NULL)
-//         {
-//             // Check if the occurrence is not part of another word
-//             if (isalnum(*(occurrence - 1)) || isalnum(*(occurrence + strlen(macroName))))
-//             {
-//                 // Move to the next occurrence if it is part of another word
-//                 occurrence = strstr(occurrence + strlen(macroName), macroName);
-//                 continue;
-//             }
-
-//             // Replace the macro with its value, including the parameter values
-//             char *newString = replaceMacroWithValue(fileContent, occurrence, macroBody, macros[i].params, macros[i].paramCount);
-
-//             // Update the file content and move to the next occurrence
-//             fileContent = newString;
-//             occurrence = strstr(fileContent, macroName);
-//         }
-//     }
-//     return fileContent;
-// }
+/**
+ * @brief Struct to store a parametrized macro
+ *
+ * @param fileContent The content of the file
+ * @return char* The new file content
+ */
 char *parametrizedMacros(char *fileContent)
 {
     struct ParametrizedMacro macro[100] = {0}; // Initialize an array of ParametrizedMacro structs
@@ -201,7 +101,7 @@ char *parametrizedMacros(char *fileContent)
             lineStart = bodyEnd;
         }
     }
-    removeDefine(fileContent);
+    // removeDefine(fileContent);
 
     // char *newFileContent = printParametrizedMacro(fileContent, macro, macroCount);
     return fileContent;

@@ -22,7 +22,7 @@ function that has parameters to provide different situations or values to the su
 // Struct for defines
 struct DefineDirective
 {
-    char name[100];
+    char name[200];
     char value[200];
 };
 
@@ -268,7 +268,7 @@ void removeParenthesisDefine(struct DefineDirective *defines, int *defineCount)
     for (int i = 0; i < *defineCount; i++)
     {
         // Check if the first and last character of the value is '(' and ')' respectively
-        if (defines[i].value[0] == '(' && defines[i].value[strlen(defines[i].value) - 1] == ')')
+        if (defines[i].value[0] == '(')
         {
             // Shift all elements from i+1 to the left by 1 to remove the current element
             for (int j = i; j < *defineCount - 1; j++)
@@ -314,32 +314,50 @@ void removeAfterLastStringDefine(struct DefineDirective *defines, int *defineCou
  */
 void removeDefine(char *fileContent)
 {
-    // Initialize lineStart to the beginning of fileContent
     char *lineStart = fileContent;
     char *defineStart;
-    // While there is still content in fileContent
     while (lineStart != NULL)
     {
-        // Check if line starts with "#define "
         defineStart = strstr(lineStart, "#define ");
-        // If no more define statements, break
         if (defineStart == NULL)
         {
             break;
         }
-        // Find the start of the next line
         char *nextLineStart = strchr(defineStart, '\n');
-        // If there is no next line, remove the rest of the content
         if (nextLineStart == NULL)
         {
             *defineStart = '\0';
             break;
         }
-        // Get the length of the define statement
         int len = nextLineStart - defineStart + 1;
-        // Move the rest of the content to the position of the define statement
+        char *defineEnd = strchr(defineStart, ')');
+        // Check if the name has parenthesis
+        int hasParenthesis = 0;
+        int spaces = 0;
+        for (char *p = defineStart; p != '\n'; ++p)
+        {
+
+            if (*p == '(')
+            {
+                hasParenthesis = 1;
+                break;
+            }
+            if (*p == ' ')
+            {
+                spaces++;
+            }
+            if (spaces == 2)
+            {
+                break;
+            }
+        }
+        // If parenthesis exists, skip this line
+        if (hasParenthesis)
+        {
+            lineStart = nextLineStart + 1;
+            continue;
+        }
         memmove(defineStart, nextLineStart + 1, strlen(nextLineStart));
-        // Update lineStart to the new position
         lineStart = defineStart;
     }
 }
@@ -390,7 +408,7 @@ char *directivesDefine(char *fileContent)
             valueStart++;
         }
         // Get the end of the value of the define
-        char *valueEnd = strchr(valueStart, '\r');
+        char *valueEnd = strchr(valueStart, '\n');
         // If valueEnd is NULL, continue to the next line
         if (valueEnd == NULL)
         {
@@ -424,20 +442,17 @@ char *directivesDefine(char *fileContent)
     if (defineCount == 0)
     {
         printf("No matches found");
-        return;
+        return fileContent;
     }
     else
     {
-        for (int i = 0; i < defineCount; i++)
-        {
-            printf("Name: %s, Value: %s\n", defines[i].name, defines[i].value);
-        }
-        // Remove the define statements from fileContent
-        removeDefine(fileContent);
-        // Remove define statements with parenthesis
-        removeParenthesisDefine(defines, &defineCount);
+
         // Remove text after the last string in define statements
         removeAfterLastStringDefine(defines, &defineCount);
+        // Remove define statements with parenthesis
+        removeParenthesisDefine(defines, &defineCount);
+        // Remove the define statements from fileContent
+        removeDefine(fileContent);
         // Change struct directives in define statements
         changeStructDirectivesDefine(defines, &defineCount);
         // Replace the define statements with their corresponding values

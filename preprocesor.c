@@ -103,11 +103,9 @@ int main(int argc, char **argv)
 
         // Remove directives
         preprocesedContent = directivesInclude(fileContent);
+        preprocesedContent = directivesDefine(preprocesedContent);
+        preprocesedContent = directivesIfdef(preprocesedContent);
 
-        preprocesedContent = operatorBackslash(preprocesedContent);
-        // preprocesedContent = directivesDefine(preprocesedContent);
-        // preprocesedContent = directivesIfdef(preprocesedContent);
-        printf("%s", preprocesedContent);
         // write prepcocesed content to file
         outFileName = writeFile(fileName, preprocesedContent);
 
@@ -120,19 +118,16 @@ int main(int argc, char **argv)
         // Close file
         fclose(file);
     }
-    else if (strcmp(flag1, "-all") == 0 || (strcmp(flag1, "-c") == 0 && strcmp(flag2, "-d") == 0) || (strcmp(flag1, "-d") == 0 && strcmp(flag2, "-c") == 0) || strcmp(flag2, "-all") == 0 || strcmp(flag3, "-all") == 0)
+    else if (strcmp(flag1, "-all") == 0 || (strcmp(flag1, "-c") == 0 && flag2 != NULL && strcmp(flag2, "-d") == 0) || (strcmp(flag1, "-d") == 0 && flag2 != NULL && strcmp(flag2, "-c") == 0) || (flag2 != NULL && strcmp(flag2, "-all") == 0) || (flag3 != NULL && strcmp(flag3, "-all") == 0))
     {
-
         // set up fileContent
         fileContent = setUpfileContent(fileName);
 
         // Remove all directives
         preprocesedContent = directivesInclude(fileContent);
-        preprocesedContent = operatorBackslash(preprocesedContent);
         preprocesedContent = directivesDefine(preprocesedContent);
-        // preprocesedContent = parametrizedMacros(preprocesedContent);
-        // preprocesedContent = directivesIfdef(preprocesedContent);
-        // preprocesedContent = removeComments(preprocesedContent);
+        preprocesedContent = directivesIfdef(preprocesedContent);
+        preprocesedContent = removeComments(preprocesedContent);
 
         // write prepcocesed content to file
         outFileName = writeFile(fileName, preprocesedContent);

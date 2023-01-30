@@ -11,7 +11,7 @@
             "program": "${workspaceFolder}/preprocesor",
             "args": [
                 "-d",
-                "examples/comp-p1.c"
+                "examples/ex_defines.c"
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

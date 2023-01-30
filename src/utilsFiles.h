@@ -110,7 +110,7 @@ char *getNewFileName(const char *fileName)
         // Add null character at the end of the substring
         newFileName[dot - fileName] = 0;
         // Append "-pre" to newFileName
-        strcat(newFileName, "-pre");
+        strcat(newFileName, "_pp");
         // Append the extension to newFileName
         strcat(newFileName, dot);
     }
@@ -137,7 +137,7 @@ char *writeFile(char *fileName, char *fileContent)
     {
         // if so, print an error message and return
         printf("No file name or content provided, usage: ./preprocesor filename.c");
-        return 1;
+        return NULL;
     }
     // get the base name of the file
     char *base = baseName(fileName);
