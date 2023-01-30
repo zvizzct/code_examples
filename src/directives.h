@@ -19,10 +19,20 @@ function that has parameters to provide different situations or values to the su
 4. Eliminate comments and replace each of them by a space (empty lines are not eliminated)
 */
 
+// Struct for defines
 struct DefineDirective
 {
     char name[100];
     char value[100];
+};
+
+// Struct for macros
+struct ParametrizedMacro
+{
+    char name[100];
+    char params[100][100];
+    char body[200];
+    int paramCount;
 };
 
 // ---------------------------------------------------------------------------------------
@@ -435,7 +445,6 @@ char *directivesDefine(char *fileContent)
 // ---------------------------------------------------------------------------------------
 // START OF 1.C) #ifndef - #endif
 // ---------------------------------------------------------------------------------------
-// TODO: 1.C) #ifdef - #endif
 /**
  * @brief Replaces all occurences of a if directive in a string with its corresponding instructions if condition is true,
  * otherwise the if directive is just removed.
@@ -556,59 +565,6 @@ char *directivesIfdef(char *fileContent)
         fileContent = replaceIfdef(fileContent, condition);
 
         ifStart = strstr(rightValueEnd, "#if");
-    }
-    return fileContent;
-}
-
-// ---------------------------------------------------------------------------------------
-// START OF 2) Parametrized macros
-// ---------------------------------------------------------------------------------------
-// TODO: 2) Parametrized macros
-void parametrizedMacros()
-{
-}
-
-// ---------------------------------------------------------------------------------------
-// START OF 3) Operator backslash “\”
-// ---------------------------------------------------------------------------------------
-// TODO: 3) Operator backslash “\”
-void operatorBackslash()
-{
-}
-
-// ---------------------------------------------------------------------------------------
-// START OF 4) Eliminate comments
-// ---------------------------------------------------------------------------------------
-
-// TODO: 4) Eliminate comments and replace each of them by a space (empty lines are not eliminated)
-
-/**
- * @brief Removes comments from a string
- *
- * @param fileContent The fileContent to be processed
- */
-char *removeComments(char *fileContent)
-{
-    int i, j;
-    // Iterate through the file contents
-    for (i = 0; fileContent[i] != '\0'; i++)
-    {
-        // Check for single line comments
-        if (fileContent[i] == '/' && fileContent[i + 1] == '/')
-        {
-            // Replace the rest of the line with spaces
-            for (j = i; fileContent[j] != '\n'; j++)
-                fileContent[j] = ' ';
-        }
-        // Check for multi-line comments
-        if (fileContent[i] == '/' && fileContent[i + 1] == '*')
-        {
-            // Replace the comment with spaces
-            for (j = i; !(fileContent[j] == '*' && fileContent[j + 1] == '/'); j++)
-                fileContent[j] = ' ';
-            fileContent[j] = ' ';
-            fileContent[j + 1] = ' ';
-        }
     }
     return fileContent;
 }

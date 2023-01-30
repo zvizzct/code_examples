@@ -1,24 +1,27 @@
 
-#include "./comp-p1.h"
-#include <string.h>
+
+#define WARNING(num, message) ({fprintf(errfile,"%d ERROR: ", num);fprintf message;\printf("ERROOORRRRRRRRRR see output file\n"); })
+
+FILE *errfile; // File where to write error messages
+FILE *ofile;   // File where to write program information#include <string.h>
 int main(int argc, char **argv)
 {
 
     int i;
-                               
+    // print the first argument
     printf("flag argument: %s\n", argv[1]);
 
-    ofile = stdout;                     
+    ofile = stdout; // default is stdout
     ofile = fopen(PRINTDESTFILE, "w");
     if (ofile == NULL)
         WARNING(0, (ofile, "Problem creating %s", PRINTDESTFILE));
 
-    errfile = stdout;                     
+    errfile = stdout; // default is stdout
     errfile = fopen(PRINTERRORFILE, "w");
     if (errfile != NULL)
         WARNING(0, (ofile, "Problem creating %s", PRINTERRORFILE));
 
-                       
+    // Prints arguments
     fprintf(ofile, "Arguments:\n");
     for (i = 0; i < argc; i++)
     {

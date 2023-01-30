@@ -6,13 +6,11 @@
 
 #include <stdio.h>
 
-#define lol
 #define ON 1
 #define OFF 0
 
 #define PRINTDESTFILE "out.txt"     // file destination of normal program print: stdout/out.txt
 #define PRINTERRORFILE "errmsg.txt" // file destination of normal program print: errmsg.txt
-#define ERRORMSG "This is a large long message as example"
 
 #define N 2
 #define PRINTWARNING ON // ON = Yes OFF / NO
@@ -25,5 +23,9 @@
 // You have to define the format of your errors, this is just an example to test,
 // but your code can do a different version of this to treat errors
 /* usage: ERROR(("Warning: Note the two brackets\n")) */
+#define ERROR1(num, message) ({printf("\n%d ERROR \n", num);printf message; })
+#define FERROR1(num, message) ({fprintf(errfile,"\n%d ERROOORRRRRRRRRR\n", num);fprintf message; })
+#define ERROR(num, message) ({WARNING( num, message); exit(0); })
+
 FILE *errfile; // File where to write error messages
 FILE *ofile;   // File where to write program information
