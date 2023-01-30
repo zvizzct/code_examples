@@ -10,8 +10,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/preprocesor",
             "args": [
-                "-d",
-                "examples/ex_include.c"
+                "help"
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

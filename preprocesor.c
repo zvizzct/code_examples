@@ -58,7 +58,18 @@ int main(int argc, char **argv)
     // Get file name from command line argument
 
     if (argc == 2)
-        fileName = argv[1];
+    {
+        // Check if help flag was provided
+        if (strcmp(argv[1], "-help") == 0)
+        {
+            flag1 = "-help";
+        }
+        else
+        {
+            fileName = argv[1];
+        }
+    }
+
     else if (argc == 3)
         flag1 = argv[1], fileName = argv[2];
     else if (argc == 4)
@@ -103,6 +114,7 @@ int main(int argc, char **argv)
 
         // Remove directives
         preprocesedContent = directivesInclude(fileContent);
+        printf("%s", preprocesedContent);
         preprocesedContent = directivesDefine(preprocesedContent);
         preprocesedContent = directivesIfdef(preprocesedContent);
 
