@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/preprocesor",
             "args": [
-                "-all",
+                "-d",
                 "examples/test.c"
             ],
             "stopAtEntry": false,

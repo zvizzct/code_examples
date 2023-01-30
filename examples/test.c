@@ -1,7 +1,5 @@
-
-
-#define WARNING(num, message) ({fprintf(errfile,"%d ERROR: ", num);fprintf message;\
-                        printf("ERROOORRRRRRRRRR see output file\n"); })
+#define WARNING(num, message) ({fprintf(errfile,"%d ERROR: ", num);\
+            fprintf message;printf("ERROOORRRRRRRRRR see output file\n"); })
 
 FILE *errfile; // File where to write error messages
 FILE *ofile;   // File where to write program information#include <string.h>
