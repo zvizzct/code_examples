@@ -102,9 +102,9 @@ int main(int argc, char **argv)
         fileContent = setUpfileContent(fileName);
 
         // Remove directives
-        // preprocesedContent = directivesInclude(fileContent);
+        preprocesedContent = directivesInclude(fileContent);
 
-        preprocesedContent = operatorBackslash(fileContent);
+        preprocesedContent = operatorBackslash(preprocesedContent);
         // preprocesedContent = directivesDefine(preprocesedContent);
         // preprocesedContent = directivesIfdef(preprocesedContent);
         printf("%s", preprocesedContent);

@@ -1,8 +1,3 @@
-/*
- * Compilers
- * Practice 1: c pre-processor
- * Example files: comp-p1.h, comp-p1.c
- */
 #include "./comp-p1.h"
 
 int main(int argc, char **argv)

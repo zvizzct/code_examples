@@ -31,11 +31,11 @@ char *operatorBackslash(char *fileContent)
             escape = 1;
         }
         // if the next character is a newline and the escape flag is set
-        else if (fileContent[i] == '\n' && escape)
+        else if ((fileContent[i] == '\r' || fileContent[i] == '\n') && escape)
         {
             // remove the \ and the newline
             fileContent[i - 1] = ' ';
-            fileContent[i] = ' ';
+            fileContent[i + 1] = ' ';
 
             // remove spaces after the newline
             int j = i + 1;

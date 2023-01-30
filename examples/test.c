@@ -1,6 +1,7 @@
+#define ERROR1(num, message) ({printf("\n%d ERROR \n", num);printf message; })
+#define FERROR1(num, message) ({fprintf(errfile,"\n%d ERROOORRRRRRRRRR\n", num);fprintf message; })
 #define WARNING(num, message) ({fprintf(errfile,"%d ERROR: ", num);\
             fprintf message;printf("ERROOORRRRRRRRRR see output file\n"); })
-
 FILE *errfile; // File where to write error messages
 FILE *ofile;   // File where to write program information#include <string.h>
 int main(int argc, char **argv)
