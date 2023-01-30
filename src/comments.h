@@ -1,3 +1,8 @@
+/*
+ * @file comments.h
+ * @brief Removes comments from a file content
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>

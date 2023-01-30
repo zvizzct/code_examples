@@ -25,8 +25,10 @@ To install the application, navigate to the directory where the files are locate
 To clean the executable generated during the compilation and compile it again, run the command `make all`.
 
 ## Usage
-To use the application, navigate to the directory where the files are located and run the command `./prepreprocesor [flags] [filename]`. Replace "[flags]" with any of the available flags mentioned above and "[filename]" with the name of the file you want to process.
+To use the application, navigate to the directory where the files are located and run the command `./prepreprocesor [flags] [examples/filename]`. Replace "[flags]" with any of the available flags mentioned above and "[filename]" with the name of the file you want to process.
 
-For example, to process a file called "file.c" and eliminate comments, you would run the command `./prepreprocesor -c file.c`.
+After running the command, the application will generate a file called `filename_pp` in the output directory. This file will contain the processed code.
+
+For example, to process a file called "file.c" allocated in examples directory, to eliminate comments, you would run the command `./prepreprocesor -c examples/file.c`.
 
 If you need more information or help, you can use the flag `-help` to get the man page of the preprocessor.

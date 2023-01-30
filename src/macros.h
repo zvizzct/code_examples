@@ -1,8 +1,22 @@
+/*
+ * @file macros.h
+ * @brief Removes parametrized macros from a file content
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
 #include <unistd.h>
+
+// Struct for macros
+struct ParametrizedMacro
+{
+    char name[100];
+    char params[100][100];
+    char body[200];
+    int paramCount;
+};
 
 /**
  * @brief Struct to store a parametrized macro

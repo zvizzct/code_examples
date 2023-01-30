@@ -1,3 +1,8 @@
+/*
+ * @file backslash.h
+ * @brief Removes the backslash operator and put the next line on the same line
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>

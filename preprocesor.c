@@ -1,3 +1,9 @@
+/*
+ * @file main.c
+ * @brief Main file for the preprocessor app that calls the other functions to process the file
+ * content and save it to a new file.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "src/utilsFiles.h"
@@ -114,9 +120,9 @@ int main(int argc, char **argv)
 
         // Remove directives
         preprocesedContent = directivesInclude(fileContent);
-        printf("%s", preprocesedContent);
         preprocesedContent = directivesDefine(preprocesedContent);
         preprocesedContent = directivesIfdef(preprocesedContent);
+        printf("%s", preprocesedContent);
 
         // write prepcocesed content to file
         outFileName = writeFile(fileName, preprocesedContent);

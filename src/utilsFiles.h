@@ -1,4 +1,9 @@
 
+/*
+ * @file utilsFiles.h
+ * @brief File containing the function declarations for file handling
+ */
+
 #include <stdio.h>
 #include <stdlib.h> //
 

@@ -1,3 +1,8 @@
+/*
+ * @file directives.h
+ * @brief Handles all directives in the file
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
@@ -24,15 +29,6 @@ struct DefineDirective
 {
     char name[200];
     char value[200];
-};
-
-// Struct for macros
-struct ParametrizedMacro
-{
-    char name[100];
-    char params[100][100];
-    char body[200];
-    int paramCount;
 };
 
 // ---------------------------------------------------------------------------------------
@@ -441,7 +437,6 @@ char *directivesDefine(char *fileContent)
     // If no matches are found
     if (defineCount == 0)
     {
-        printf("No matches found");
         return fileContent;
     }
     else
