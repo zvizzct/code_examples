@@ -6,8 +6,8 @@
 
 // #include "utilsFiles.h"
 
-#define MAX_DEFINES 100
-#define MAX_NAME_LEN 100
+#define MAX_DEFINES 200
+#define MAX_NAME_LEN 200
 /*
 1. Directives
     a. #include
@@ -23,7 +23,7 @@ function that has parameters to provide different situations or values to the su
 struct DefineDirective
 {
     char name[100];
-    char value[100];
+    char value[200];
 };
 
 // Struct for macros
@@ -428,6 +428,10 @@ char *directivesDefine(char *fileContent)
     }
     else
     {
+        for (int i = 0; i < defineCount; i++)
+        {
+            printf("Name: %s, Value: %s\n", defines[i].name, defines[i].value);
+        }
         // Remove the define statements from fileContent
         removeDefine(fileContent);
         // Remove define statements with parenthesis

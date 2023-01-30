@@ -15,31 +15,29 @@
  */
 char *operatorBackslash(char *fileContent)
 {
-    int len = strlen(fileContent); // Get the length of the file content
-    int escape = 0;                // Initialize escape variable
-
+    int len = strlen(fileContent);
+    int escape = 0;
     for (int i = 0; i < len; i++)
     {
         if (fileContent[i] == '\\')
         {
+            fileContent[i] = ' ';
             escape = 1;
         }
-        else if (fileContent[i] == '\n' && escape)
+        else if (fileContent[i + 1] == '\n' && escape)
         {
-            int j = i + 1;
+            int j = i + 1 + 1;
             while (fileContent[j] == ' ')
             {
-                // Remove spaces after newline and backslash
                 for (int k = j; k < len; k++)
                 {
                     fileContent[k] = fileContent[k + 1];
                 }
                 len--;
             }
-            // Remove newline and backslash
             for (int j = i; j < len; j++)
             {
-                fileContent[j] = fileContent[j + 1];
+                fileContent[j] = fileContent[j + 1 + 1];
             }
             escape = 0;
             i--;
@@ -50,6 +48,5 @@ char *operatorBackslash(char *fileContent)
             escape = 0;
         }
     }
-    printf("%s", fileContent);
     return fileContent;
 }
