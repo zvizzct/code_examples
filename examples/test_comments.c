@@ -1,23 +1,23 @@
 /*
  * Compilers
  * Practice 1: c pre-processor
- * Example file containing all directives which can be process by our preprocesor
+ * Example file containing only comments
  */
 
-#include "./comp-p1.h"
-#include <string.h>
 int main(int argc, char **argv)
 {
-
+    // blaaaablaa
+    // blaaaba
+    // blaaaba
     int i;
-    // print the first argument
-    printf("flag argument: %s\n", argv[1]);
 
     ofile = stdout; // default is stdout
     ofile = fopen(PRINTDESTFILE, "w");
     if (ofile == NULL)
         WARNING(0, (ofile, "Problem creating %s", PRINTDESTFILE));
-
+    /* blablaaaaaa
+    blabaaa
+    baaaaa */
     errfile = stdout; // default is stdout
     errfile = fopen(PRINTERRORFILE, "w");
     if (errfile != NULL)
@@ -28,15 +28,11 @@ int main(int argc, char **argv)
     for (i = 0; i < argc; i++)
     {
         fprintf(ofile, "%i: %s\n", i, argv[i]);
-#if (PRINTWARNING == ON)
-        WARNING(i, (errfile, "warning print example %s \n", argv[i]));
-#endif
-    }
-
-#if (PRINTERROR == ON)
-    ERROR(i, (errfile, "This is an error, and it stops"));
-#endif
-
+    /* blaaaaaaaa
+    blaaaaaaaaabla
+    blaaa
+    baa
+    blaa */
     fclose(ofile);
     fclose(errfile);
 
