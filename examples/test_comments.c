@@ -4,6 +4,8 @@
  * Example file containing only comments
  */
 
+// #include "./comp-p1.h"
+// #define A 5
 int main(int argc, char **argv)
 {
     // blaaaablaa
@@ -11,30 +13,22 @@ int main(int argc, char **argv)
     // blaaaba
     int i;
 
-    ofile = stdout; // default is stdout
-    ofile = fopen(PRINTDESTFILE, "w");
-    if (ofile == NULL)
-        WARNING(0, (ofile, "Problem creating %s", PRINTDESTFILE));
     /* blablaaaaaa
     blabaaa
     baaaaa */
-    errfile = stdout; // default is stdout
-    errfile = fopen(PRINTERRORFILE, "w");
-    if (errfile != NULL)
-        WARNING(0, (ofile, "Problem creating %s", PRINTERRORFILE));
-
-    // Prints arguments
-    fprintf(ofile, "Arguments:\n");
-    for (i = 0; i < argc; i++)
-    {
-        fprintf(ofile, "%i: %s\n", i, argv[i]);
+    i += 3;
     /* blaaaaaaaa
     blaaaaaaaaabla
     blaaa
     baa
     blaa */
-    fclose(ofile);
-    fclose(errfile);
+/* #if (PRINTWARNING == ON)
+        WARNING(i, (errfile, "warning print example %s \n", argv[i]));
+#endif */
+    i +=3;
+/* #if (PRINTERROR == ON)
+    ERROR(i, (errfile, "This is an error, and it stops"));
+#endif */
 
     return 0;
 }

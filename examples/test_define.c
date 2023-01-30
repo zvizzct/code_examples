@@ -6,8 +6,8 @@
 
 #define A 1
 #define B   3
-#define C 5
-#define D  10
+#define   C 5
+#define   D    10
 
 int main(int argc, char **argv)
 {
