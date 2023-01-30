@@ -15,18 +15,27 @@
  */
 char *operatorBackslash(char *fileContent)
 {
+    // get the length of the input string
     int len = strlen(fileContent);
+    // flag to track whether a backslash has been encountered
     int escape = 0;
+
+    // loop through each character in the string
     for (int i = 0; i < len; i++)
     {
+        // if current character is a backslash
         if (fileContent[i] == '\\')
         {
+            // replace the backslash with a space
             fileContent[i] = ' ';
+            // set escape flag
             escape = 1;
         }
+        // if the next character is a newline and the escape flag is set
         else if (fileContent[i + 1] == '\n' && escape)
         {
-            int j = i + 1 + 1;
+            // remove spaces after the newline
+            int j = i + 2;
             while (fileContent[j] == ' ')
             {
                 for (int k = j; k < len; k++)
@@ -35,18 +44,24 @@ char *operatorBackslash(char *fileContent)
                 }
                 len--;
             }
+            // remove the newline
             for (int j = i; j < len; j++)
             {
-                fileContent[j] = fileContent[j + 1 + 1];
+                fileContent[j] = fileContent[j + 2];
             }
+            // reset escape flag
             escape = 0;
+            // decrement i to account for removed newline
             i--;
+            // decrement len to account for removed newline
             len--;
         }
         else
         {
+            // reset escape flag
             escape = 0;
         }
     }
+    // return modified string
     return fileContent;
 }
